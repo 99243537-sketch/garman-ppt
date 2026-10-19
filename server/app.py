@@ -17,7 +17,7 @@
                         → {status: queued|running|done|error, position?, secs?, plan?, remaining?, error?, code?, retryable?}
   POST /api/plan        旧接口（同步等待），保留给浏览器里还缓存着旧网页的用户
 """
-import json, os, re, sqlite3, time, uuid, hashlib, threading, queue, urllib.request, urllib.parse
+import json, os, re, sqlite3, time, uuid, hashlib, threading, queue, urllib.request, urllib.parse, urllib.error
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 
@@ -47,7 +47,8 @@ MAX_QUEUE = int(E("MAX_QUEUE", "20"))                    # 排队 + 进行中最
 MAX_REPAIRS = int(E("MAX_REPAIRS", "2"))
 MAX_DOC_CHARS = int(E("MAX_DOC_CHARS", "30000"))
 MAX_OUTPUT_TOKENS = int(E("MAX_OUTPUT_TOKENS", "24000"))
-TIMEOUT = int(E("REQUEST_TIMEOUT", "240"))
+TIMEOUT = int(E("REQUEST_TIMEOUT", "240"))              # 等第一个字节 / 两段数据之间最长等多久
+STREAM = E("STREAM", "1") != "0"                         # 流式接收（默认开）
 JOB_TTL = int(E("JOB_TTL", "600"))                       # 结果在内存里保留多久（秒）
 ORIGINS = [o.strip() for o in E("ALLOWED_ORIGINS", "https://www.zhaodun.work,https://zhaodun.work").split(",") if o.strip()]
 DB = E("USAGE_DB", str(HERE / "usage.db"))
@@ -118,19 +119,70 @@ def extract_json(text, truncated=False):
     raise err
 
 
+def upstream(detail, cause=None):
+    e = PlanError("upstream_error", MSG_UPSTREAM)
+    e.detail = detail  # 记进用量库，便于排查（不含文档内容）
+    return e
+
+
 def call_model(messages):
-    body = json.dumps({"model": MODEL, "messages": messages, "max_tokens": MAX_OUTPUT_TOKENS, "temperature": 1.0}).encode()
-    req = urllib.request.Request(API_BASE + "/chat/completions", data=body, method="POST",
+    """流式调用：模型边生成边传回，连接上一直有数据，不会因长时间无数据被中途断开"""
+    body = {"model": MODEL, "messages": messages, "max_tokens": MAX_OUTPUT_TOKENS, "temperature": 1.0}
+    if STREAM:
+        body["stream"] = True
+    req = urllib.request.Request(API_BASE + "/chat/completions", data=json.dumps(body).encode(), method="POST",
                                  headers={"Authorization": "Bearer " + API_KEY, "Content-Type": "application/json"})
+    t0 = time.time()
     try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-            data = json.loads(r.read().decode())
-    except Exception as e:  # 网络、超时、HTTP 错误（含 MiniMax 限流 429）
-        raise PlanError("upstream_error", MSG_UPSTREAM) from e
-    if (data.get("base_resp") or {}).get("status_code", 0) not in (0, None) or not data.get("choices"):
-        raise PlanError("upstream_error", MSG_UPSTREAM)
-    ch = data["choices"][0]
-    return ch["message"].get("content") or "", data.get("usage", {}), ch.get("finish_reason")
+        r = urllib.request.urlopen(req, timeout=TIMEOUT)
+    except urllib.error.HTTPError as e:
+        try:
+            info = e.read(300).decode("utf-8", "replace")
+        except Exception:  # noqa
+            info = ""
+        info = re.sub(r"\s+", " ", info)[:160]
+        raise upstream(f"http{e.code}:{info}")
+    except Exception as e:  # noqa  连不上、超时
+        raise upstream(f"{type(e).__name__}:{str(e)[:80]}@{round(time.time() - t0)}s")
+    content, usage, finish = [], {}, None
+    try:
+        with r:
+            if "event-stream" not in (r.headers.get("Content-Type") or ""):
+                data = json.loads(r.read().decode())
+                br = data.get("base_resp") or {}
+                if br.get("status_code", 0) not in (0, None) or not data.get("choices"):
+                    raise upstream(f"api{br.get('status_code')}:{str(br.get('status_msg', ''))[:120]}")
+                ch = data["choices"][0]
+                return ch["message"].get("content") or "", data.get("usage", {}), ch.get("finish_reason")
+            for raw in r:
+                line = raw.decode("utf-8", "replace").strip()
+                if not line.startswith("data:"):
+                    continue
+                d = line[5:].strip()
+                if d == "[DONE]":
+                    break
+                try:
+                    chunk = json.loads(d)
+                except ValueError:
+                    continue
+                br = chunk.get("base_resp") or {}
+                if br.get("status_code", 0) not in (0, None):
+                    raise upstream(f"api{br.get('status_code')}:{str(br.get('status_msg', ''))[:120]}")
+                for ch in chunk.get("choices") or []:
+                    piece = (ch.get("delta") or {}).get("content") or (ch.get("message") or {}).get("content")
+                    if piece and ch.get("delta") is not None:
+                        content.append(piece)
+                    finish = ch.get("finish_reason") or finish
+                usage = chunk.get("usage") or usage
+                if time.time() - t0 > TIMEOUT * 3:
+                    raise upstream(f"too_slow@{round(time.time() - t0)}s")
+    except PlanError:
+        raise
+    except Exception as e:  # noqa  中途断线
+        raise upstream(f"{type(e).__name__}:{str(e)[:80]}@{round(time.time() - t0)}s,got{len(''.join(content))}")
+    if not finish:  # 没收到结束标记就断了
+        raise upstream(f"stream_cut@{round(time.time() - t0)}s,got{len(''.join(content))}")
+    return "".join(content), usage, finish
 
 
 def paras_text(paras):
@@ -140,14 +192,16 @@ def paras_text(paras):
 def make_messages(req):
     style = "毛玻璃（style 写 \"glass\"）" if req.get("style") == "glass" else "普通（style 写 \"normal\"）"
     user = f"文档：《{req.get('doc_name', '未命名')}》\n效果：{style}\n\n段落：\n{paras_text(req['paras'])}"
-    msgs = [{"role": "system", "content": PROMPT}, {"role": "user", "content": user}]
     if req.get("errors") and req.get("previous_plan"):
-        msgs.append({"role": "assistant", "content": json.dumps(req["previous_plan"], ensure_ascii=False, separators=(",", ":"))})
-        msgs.append({"role": "user", "content": ("程序校验没有通过，问题如下：\n- " + "\n- ".join(str(x) for x in req["errors"][:30]) +
-            "\n\n请只修改有问题的页，不要重写整份方案。只输出一个紧凑的 JSON：\n"
-            '{"fix":[{"page":页码,"slide":{这一页修改后的完整内容}}]}\n'
-            "页码从 1 开始，与上面的「第 N 页」一致；没问题的页不要输出。页脚有问题时加上 \"footer\"。"
-            "只有必须增加或删除页面时，才输出完整方案（含 slides）。")})
+        # 修正：不用多轮对话（MiniMax 要求多轮时原样带回上一轮的思考过程），把上一版方案当资料放进同一条提问
+        user += ("\n\n下面是上一版分页方案（slides 里第 1 个对象就是「第 1 页」）：\n"
+                 + json.dumps(req["previous_plan"], ensure_ascii=False, separators=(",", ":"))
+                 + "\n\n程序校验没有通过，问题如下：\n- " + "\n- ".join(str(x) for x in req["errors"][:30])
+                 + "\n\n请只修改有问题的页，不要重写整份方案。只输出一个紧凑的 JSON：\n"
+                 '{"fix":[{"page":页码,"slide":{这一页修改后的完整内容}}]}\n'
+                 "页码从 1 开始，与上面的「第 N 页」一致；没问题的页不要输出。页脚有问题时加上 \"footer\"。"
+                 "只有必须增加或删除页面时，才输出完整方案（含 slides）。")
+    msgs = [{"role": "system", "content": PROMPT}, {"role": "user", "content": user}]
     return msgs
 
 
@@ -222,7 +276,7 @@ def run(job):
         ok, note, perr = 1, f"tokens={usage.get('total_tokens', '')}", None
     except PlanError as e:
         ok, plan, perr = 0, None, e
-        note = e.code + ("" if e.__cause__ is None else ":" + type(e.__cause__).__name__)
+        note = e.code + (":" + e.detail if getattr(e, "detail", "") else "")
     except Exception as e:  # noqa  其他意外
         ok, plan, perr = 0, None, PlanError("server_error", MSG_UPSTREAM)
         note = "server_error:" + type(e).__name__

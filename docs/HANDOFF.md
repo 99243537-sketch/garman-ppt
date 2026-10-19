@@ -72,3 +72,10 @@
 - 本地自动处理：snap（标点/全半角对齐）、fixNotes（备注漏段插到前一段之后、重复去掉）、shrink（太长的摘句在逗号句号处截成前缀，仍是原文）。
 - 测试 run4.py 5 个场景 + run3.py 13 个场景回归全部通过。
 - 同访客同文档同步骤重复提交：直接返回正在进行的任务（接上），否则 busy_self 提示文档名和已等待秒数。run5.py 通过。
+
+## 2026-10-20 第 3 次：流式接收
+- Eddy 排查：修正失败全是 upstream_error:timeout（服务器 .env 里 REQUEST_TIMEOUT=180，非流式等整段回复超时）；2 万字文档 4 次只成功 1 次。
+- 改为 stream=true（SSE 解析，未收到 finish_reason 视为 stream_cut），超时变为数据间隔，总上限 3×TIMEOUT；STREAM=0 可退回。
+- 修正改为单轮提问（MiniMax 文档：多轮须原样保留 <think>）。
+- note 记录 http 状态码+MiniMax 原话、超时/断线秒数。
+- 待观察：2 万字文档是否仍被 MAX_OUTPUT_TOKENS=24000（含思考）截断；若是，下一步做长文档分段分页。

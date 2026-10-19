@@ -99,7 +99,7 @@
     if (!r.ok || !j.job_id) throw fail(j.error, j.code || "http_" + r.status, j.retryable !== undefined ? j.retryable : r.status >= 500);
     return j;
   }
-  async function poll(jobId) {
+  async function poll(jobId, fixing) {
     const t0 = Date.now(); let misses = 0;
     for (;;) {
       if (Date.now() - t0 > 12 * 60 * 1000) throw fail("等了太久还没有结果，请再试一次", "timeout", true);
@@ -114,14 +114,15 @@
       if (j.status === "done") { if (typeof j.remaining === "number") $("left").textContent = `今天还可以生成 ${j.remaining} 次`; return j; }
       if (j.status === "error" || !r.ok) throw fail(j.error, j.code || "http_" + r.status, j.retryable !== undefined ? j.retryable : true);
       if (j.status === "queued") msg(j.position > 0 ? `排队中，前面还有 ${j.position} 份，请稍候…` : "排队中，下一个就轮到你…");
-      else msg(`大模型正在分页，已等待 ${j.secs || 0} 秒（通常 1–3 分钟，可以锁屏，回来会接着等）`);
+      else msg(fixing ? `大模型正在修正，已等待 ${j.secs || 0} 秒（通常 1–2 分钟，可以锁屏，回来会接着等）`
+                      : `大模型正在分页，已等待 ${j.secs || 0} 秒（通常 1–3 分钟，可以锁屏，回来会接着等）`);
       await sleep(3000);
     }
   }
   // 一次完整的请求：提交（或接着取上次没取完的结果）
   async function askOnce(req) {
     if (!st.job) { const j = await submit(Object.assign(baseBody(), req)); st.job = { id: j.job_id, req }; save(); if (j.position > 0) msg(`排队中，前面还有 ${j.position} 份，请稍候…`); }
-    try { const j = await poll(st.job.id); st.job = null; save(); const pl = j.plan || {}; if (!Array.isArray(pl.slides) && !(req.errors && Array.isArray(pl.fix))) throw fail("", "plan_parse_failed", true); return j; }
+    try { const j = await poll(st.job.id, !!req.errors); st.job = null; save(); const pl = j.plan || {}; if (!Array.isArray(pl.slides) && !(req.errors && Array.isArray(pl.fix))) throw fail("", "plan_parse_failed", true); return j; }
     catch (e) { if (e.code !== "network") { st.job = null; save(); } throw e; }  // 只是网络断了：任务还在，下次接着取
   }
   // 可重试的错误（没写完、解析失败、网络、服务器重启）自动再试一次；失败的请求不计入每日次数
@@ -262,7 +263,7 @@
         const r = D.check(st.doc, st.plan);
         if (r.ok) break;
         if (st.round >= 2) throw fail("大模型的分页方案两次修正后仍有问题，请再试一次；多次失败可以换一份文档", "check_failed", true);
-        msg(`校验发现 ${r.errs.length} 处问题，正在让大模型修正（第 ${st.round + 1} 次，通常不到 1 分钟）…`);
+        msg(`校验发现 ${r.errs.length} 处问题，正在让大模型修正（第 ${st.round + 1} 次）…`);
         await repair({ session_id: st.sid, previous_plan: st.plan, errors: r.errs });
       }
       msg("校验通过。");
