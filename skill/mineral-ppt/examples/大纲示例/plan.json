@@ -1,0 +1,9 @@
+{"footer":["P001","2026年妇联工作总结"],
+ "corrections":[{"para":"P006","from":"在接再厉","to":"再接再厉","reason":"成语错字","accepted":true}],
+ "slides":[
+  {"type":"cover","title":["P001","2026年妇联工作总结"],"notes":["P001"]},
+  {"type":"cards","kicker":["P002","一、主要成效"],"title":["P002","主要成效"],"arrows":true,"intro":["P002"],
+   "cards":[{"no":"1","head":["P003","全年开展宣讲活动126场"],"body":["P003","覆盖妇女群众3万余人"],"notes":["P003"]},
+            {"no":"2","head":["P004","带动1.2万名妇女实现就业创业"],"notes":["P004"]}],"end":[]},
+  {"type":"text","kicker":["P005","二、下一步打算"],"title":["P005","下一步打算"],"points":[["P006","再接再厉，推动各项工作落实落细"]],"notes":["P005","P006"]},
+  {"type":"end","notes":[]}]}

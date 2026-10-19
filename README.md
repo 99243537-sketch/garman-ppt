@@ -2,12 +2,14 @@
 
 把已定稿的文档（.docx / .md / .txt）转换成可编辑的 PPTX：忠实原文、矿物色彩、卡片讲课动画、讲稿备注。
 
-**状态：开发中。** 目前只有兼容性测试技能（`skill-probe/`），正式版尚未发布。
+**状态：0.2.0 试用版。** 正式技能在 `skill/mineral-ppt/`；兼容性测试技能在 `skill-probe/`。
 
 ## 目录
 
 | 路径 | 内容 |
 |---|---|
+| `skill/mineral-ppt/` | 正式技能：文档转 PPT（单文件脚本，无需 npm install） |
+| `tools/doc2ppt/` | 正式技能源码 |
 | `skill-probe/mineral-ppt-probe/` | 兼容性测试技能（单文件脚本，无需 npm install） |
 | `tools/probe/` | 测试技能源码与打包说明 |
 | `docs/` | 设计说明、交接记录、攻略 |
