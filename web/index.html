@@ -38,6 +38,13 @@
   .corr label { display:block; padding:8px 0; border-bottom:1px solid var(--amzSoft); }
   .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
   .hide { display:none; }
+  .opt .thumbs { display:flex; gap:6px; margin:8px 0 0 22px; }
+  .thumbs img { width:calc(50% - 3px); border-radius:4px; border:1px solid var(--line); cursor:zoom-in; display:block; }
+  .tip { font-size:12px; color:var(--muted); margin:6px 0 0; }
+  #lightbox { position:fixed; inset:0; background:rgba(18,41,71,.92); display:flex; align-items:center; justify-content:center; padding:16px; z-index:9; cursor:zoom-out; }
+  #lightbox.hide { display:none; }
+  #lightbox img { max-width:100%; max-height:100%; border-radius:6px; }
+  .banner { background:var(--van); color:#fff; padding:12px 14px; border-radius:8px; margin-bottom:16px; font-size:15px; }
   footer { text-align:center; font-size:13px; color:var(--muted); padding:0 16px 30px; }
   footer a { color:var(--amzDeep); }
 </style>
@@ -49,16 +56,23 @@
   <p>上传已经定稿的文档，生成可编辑的 PPT：页面只放原文摘句，完整原文放进讲稿备注，卡片带讲课动画。</p>
 </div></header>
 <main>
-  <div class="notice"><b>请勿上传涉密材料。</b>含个人信息（姓名、身份证号、手机号等）的文档请先脱敏。文件在你的浏览器里读取和生成，本站不保存；只有段落文字会发送给大模型（MiniMax）做分页。</div>
+  <div class="banner hide" id="inapp"></div>
+  <section class="card hide" id="resume">
+    <h2>接着上次的</h2>
+    <p id="resume-text"></p>
+    <div class="row"><button id="resume-go">接着做</button><button class="sec" id="resume-no">不要了</button></div>
+  </section>
+  <div class="notice"><b>请勿上传涉密材料。</b>含个人信息（姓名、身份证号、手机号等）的文档请先脱敏。文件在你的浏览器里读取和生成，本站不保存；只有段落文字会发送给大模型（MiniMax）做分页，服务器用完即丢。制作进度只暂存在你自己的浏览器里，24 小时后自动清除。</div>
 
   <section class="card" id="s-input">
     <h2>1. 选择文档</h2>
     <div class="drop" id="drop"><b>点击选择</b>或把文件拖到这里<br><small>支持 .docx、.md、.txt，最多 3 万字；.doc 请先另存为 .docx</small><div id="fname"></div></div>
     <input type="file" id="file" accept=".docx,.md,.txt,.markdown" class="hide">
     <div class="opts">
-      <label class="opt"><input type="radio" name="style" value="normal" checked>普通效果<span>浅色底、白色卡片，清爽正式</span></label>
-      <label class="opt"><input type="radio" name="style" value="glass">毛玻璃效果<span>深色模糊矿物背景、半透明玻璃卡片</span></label>
+      <label class="opt"><input type="radio" name="style" value="normal" checked>普通效果<span>浅色底、白色卡片，清爽正式</span><span class="thumbs"><img src="preview/normal-1.jpg?v=1" alt="普通效果封面"><img src="preview/normal-2.jpg?v=1" alt="普通效果卡片页"></span></label>
+      <label class="opt"><input type="radio" name="style" value="glass">毛玻璃效果<span>深色模糊矿物背景、半透明玻璃卡片</span><span class="thumbs"><img src="preview/glass-1.jpg?v=1" alt="毛玻璃效果封面"><img src="preview/glass-2.jpg?v=1" alt="毛玻璃效果卡片页"></span></label>
     </div>
+    <p class="tip">点图片看大图。卡片页放映时会一张张出现，讲到下一张时上一张变淡。</p>
     <label class="agree"><input type="checkbox" id="agree"> 我确认文档不含涉密内容，个人信息已脱敏。</label>
     <button id="go" disabled>生成 PPT</button>
   </section>
@@ -86,11 +100,12 @@
     <h2>3. 完成</h2>
     <p id="summary"></p>
     <div class="row"><button id="dl">下载 PPT</button><button class="sec" id="dl-rep">下载生成报告</button><button class="sec" id="again">再做一份</button></div>
-    <p class="fix">请用 PowerPoint 或 WPS 放映检查一遍；手机预览可能替换字体、看不到动画。</p>
+    <p class="fix">请用 PowerPoint 或 WPS 放映检查一遍；手机预览可能替换字体、看不到动画。苹果手机和 Mac 没有微软雅黑，打开时字体会被替换，在 Windows 电脑上放映就是正常的。</p>
   </section>
 </main>
 <footer>配色：赵盾矿物色彩系统 v2.3 · <a href="/color/">色彩规范</a> · 分页：MiniMax 大模型 · 生成工具 doc2ppt <span id="ver"></span><br><span id="left"></span></footer>
-<script src="doc2ppt.browser.js"></script>
-<script src="app.js"></script>
+<div id="lightbox" class="hide"><img id="big" alt="效果图大图"></div>
+<script src="doc2ppt.browser.js?v=0.2.1"></script>
+<script src="app.js?v=20261020"></script>
 </body>
 </html>

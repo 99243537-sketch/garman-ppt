@@ -57,3 +57,11 @@
 
 ## 待赵盾决定
 毛玻璃是否进第一版、毛玻璃背景来源、字体选项、署名方式、仓库是否公开及许可。
+
+## 2026-10-20 网页版：排队取结果（解决 Cloudflare 524）
+
+- 起因：站点在 Cloudflare 后面，单请求 100 秒断开；一次修正请求实际跑了 171 秒，学员看到 524。
+- 后端：`POST /api/jobs` → 任务号；`GET /api/jobs/<id>?v=` 轮询。内存任务表，结果保留 JOB_TTL=600 秒，不落盘。MAX_CONCURRENT=3 个工人线程；GLOBAL_DAILY_LIMIT=200；MAX_QUEUE=20；同一访客同时 1 份，在途计入当日次数。旧 `/api/plan` 保留（同步等待）。IP 取 CF-Connecting-IP。
+- 前端：轮询（锁屏回来立即取，网络抖动 2 分钟内容忍）；进度存 localStorage（ppt_state_v1，24 小时）支持刷新续做、做完重新下载；beforeunload 提醒；微信/QQ/钉钉/微博/飞书内置浏览器提示；txt/md 自动识别 GBK、UTF-16；.doc/.pdf/.wps/.pages 提示转换；坏 docx 中文提示；摘句只差标点/空格/全半角时本地对齐原文（snap），减少修正请求；效果图 web/preview/*.jpg（公文示例 LibreOffice 渲染）；脚本加 ?v= 防缓存。
+- 测试：e2e/mock3.py + run3.py，A–M 13 个场景全部通过（慢请求、刷新续做、做完重下、标点对齐、修正、错别字中途刷新、三人并发排队、同人双开、服务器中途重启、GBK、坏文件、微信、两次失败重试）。
+- Eddy 的端口已改为 8796（8790 被 minimax-video 占用）。
