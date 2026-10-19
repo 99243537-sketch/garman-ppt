@@ -166,8 +166,15 @@ def admit(req, ip):
     visitor = str(req.get("visitor_id", ""))[:64]
     who = who_of(ip, visitor)
     with lock:
-        if any(j["who"] == who or (visitor and j["visitor"] == visitor) for j in active()):
-            raise PlanError("busy_self", "你已经有一份正在制作，请等它完成后再试", True, 409)
+        mine = [j for j in active() if j["who"] == who or (visitor and j["visitor"] == visitor)]
+        if mine:
+            j = mine[0]
+            kind_now = "repair" if req.get("errors") else "plan"
+            if j["visitor"] == visitor and j["doc"] == str(req.get("doc_name", ""))[:100] and j["chars"] == chars and j["kind"] == kind_now:
+                # 同一份文档、同一步：多半是页面没收到上次的回复（网络抖动、刷新），直接接上原来的任务
+                return j
+            secs = round(time.time() - j["created"])
+            raise PlanError("busy_self", f"你还有一份《{j['doc']}》正在制作（已等待 {secs} 秒），请等它完成后再试，通常 1–3 分钟", True, 409)
         if len(active()) >= MAX_QUEUE:
             raise PlanError("busy_queue", "现在使用的人太多，请过几分钟再试", True, 503)
         c = db()
@@ -192,7 +199,7 @@ def admit(req, ip):
                 c.commit()
         finally:
             c.close()
-        job = {"id": uuid.uuid4().hex, "who": who, "visitor": visitor, "kind": kind, "sid": sid, "chars": chars,
+        job = {"id": uuid.uuid4().hex, "who": who, "visitor": visitor, "kind": kind, "sid": sid, "chars": chars, "doc": str(req.get("doc_name", ""))[:100],
                "status": "queued", "created": time.time(), "started": None, "finished": None,
                "req": req, "result": None, "done": threading.Event()}
         JOBS[job["id"]] = job
