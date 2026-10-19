@@ -1,17 +1,29 @@
 name: release
+# 打 v* 标签、或 skill-probe/ 有改动推到 main 时：打包测试技能，上传到对应 Release 的 Assets（已存在则覆盖）
 on:
   push:
     tags: ["v*"]
+    branches: [main]
+    paths: ["skill-probe/**", ".github/workflows/release.yml"]
+  workflow_dispatch:
 permissions:
   contents: write
+env:
+  TAG: v0.1.0-probe
+  ASSET: mineral-ppt-probe-0.1.0.zip
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: 打包测试技能
-        run: cd skill-probe && zip -r ../mineral-ppt-probe-${GITHUB_REF_NAME}.zip mineral-ppt-probe
-      - name: 发布 Release
+      - name: 打包（压缩包顶层为 mineral-ppt-probe/，内含 SKILL.md）
+        run: cd skill-probe && zip -r "../$ASSET" mineral-ppt-probe && cd .. && unzip -l "$ASSET"
+      - name: 上传到 Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" mineral-ppt-probe-${GITHUB_REF_NAME}.zip --title "$GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md --prerelease
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ASSET" --clobber
+          else
+            gh release create "$TAG" "$ASSET" --title "$TAG" --notes-file RELEASE_NOTES.md --prerelease
+          fi
