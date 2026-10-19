@@ -1,0 +1,17 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 打包测试技能
+        run: cd skill-probe && zip -r ../mineral-ppt-probe-${GITHUB_REF_NAME}.zip mineral-ppt-probe
+      - name: 发布 Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" mineral-ppt-probe-${GITHUB_REF_NAME}.zip --title "$GITHUB_REF_NAME" --notes-file RELEASE_NOTES.md --prerelease
