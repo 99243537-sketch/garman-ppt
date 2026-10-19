@@ -1,29 +1,30 @@
 name: release
-# 打 v* 标签、或 skill-probe/ 有改动推到 main 时：打包测试技能，上传到对应 Release 的 Assets（已存在则覆盖）
+# skill/ 或 skill-probe/ 有改动推到 main（或手动运行）时：打包，上传到对应 Release（不存在就创建，已存在就覆盖附件）
 on:
   push:
-    tags: ["v*"]
     branches: [main]
-    paths: ["skill-probe/**", ".github/workflows/release.yml"]
+    paths: ["skill/**", "skill-probe/**", ".github/workflows/release.yml"]
   workflow_dispatch:
 permissions:
   contents: write
-env:
-  TAG: v0.1.1-probe
-  ASSET: mineral-ppt-probe-0.1.1.zip
 jobs:
   release:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - { tag: v0.2.1, dir: skill, name: mineral-ppt, asset: mineral-ppt-0.2.1.zip, notes: RELEASE_NOTES.md, pre: "" }
+          - { tag: v0.1.1-probe, dir: skill-probe, name: mineral-ppt-probe, asset: mineral-ppt-probe-0.1.1.zip, notes: RELEASE_NOTES_PROBE.md, pre: "--prerelease" }
     steps:
       - uses: actions/checkout@v4
-      - name: 打包（压缩包顶层为 mineral-ppt-probe/，内含 SKILL.md）
-        run: cd skill-probe && zip -r "../$ASSET" mineral-ppt-probe && cd .. && unzip -l "$ASSET"
+      - name: 打包（压缩包顶层为技能目录，内含 SKILL.md）
+        run: cd ${{ matrix.dir }} && zip -r "../${{ matrix.asset }}" ${{ matrix.name }} && cd .. && unzip -l "${{ matrix.asset }}"
       - name: 上传到 Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$ASSET" --clobber
+          if gh release view "${{ matrix.tag }}" >/dev/null 2>&1; then
+            gh release upload "${{ matrix.tag }}" "${{ matrix.asset }}" --clobber
           else
-            gh release create "$TAG" "$ASSET" --title "$TAG" --notes-file RELEASE_NOTES.md --prerelease
+            gh release create "${{ matrix.tag }}" "${{ matrix.asset }}" --target main --title "${{ matrix.tag }}" --notes-file "${{ matrix.notes }}" ${{ matrix.pre }}
           fi

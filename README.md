@@ -2,7 +2,7 @@
 
 把已定稿的文档（.docx / .md / .txt）转换成可编辑的 PPTX：忠实原文、矿物色彩、卡片讲课动画、讲稿备注。
 
-**状态：0.2.0 试用版。** 正式技能在 `skill/mineral-ppt/`；兼容性测试技能在 `skill-probe/`。
+**状态：0.2.1 试用版。** 正式技能在 `skill/mineral-ppt/`；兼容性测试技能在 `skill-probe/`。
 
 ## 目录
 
