@@ -28,16 +28,33 @@
     file = f; $("fname").textContent = "已选择：" + f.name; ready();
   }
 
-  async function askModel(body) {
-    const r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-    let j = {}; try { j = await r.json(); } catch (e) { /* 非 JSON */ }
-    if (!r.ok) throw new Error(j.error || `服务暂时不可用（${r.status}）`);
+  // 给学员看的错误：只显示中文；英文异常（网络、浏览器内部错误）一律换成友好提示
+  const FRIENDLY = "网络或服务暂时出了点问题，请稍后再试";
+  const friendly = (t) => (t && /[\u4e00-\u9fff]/.test(t) ? t : FRIENDLY);
+  function fail(text, code, retryable) { const e = new Error(friendly(text)); e.code = code || "unknown"; e.retryable = retryable !== false; return e; }
+
+  async function askOnce(body) {
+    let r;
+    try { r = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); }
+    catch (e) { throw fail("", "network", true); }
+    let j = {}; try { j = await r.json(); } catch (e) { /* 网关返回的不是 JSON（如 504 超时页面） */ }
+    if (!r.ok) throw fail(j.error, j.code || "http_" + r.status, j.retryable !== undefined ? j.retryable : r.status >= 500);
+    if (!j.plan || !Array.isArray(j.plan.slides)) throw fail("", "plan_parse_failed", true);
     if (typeof j.remaining === "number") $("left").textContent = `今天还可以生成 ${j.remaining} 次`;
     return j;
   }
+  // 可重试的错误（模型没写完、解析失败、网络）自动再试一次；失败的请求不计入每日次数
+  async function askModel(body) {
+    try { return await askOnce(body); }
+    catch (e) {
+      if (!e.retryable) throw e;
+      msg("大模型这次没有给出完整的分页方案，正在自动重试…");
+      return await askOnce(body);
+    }
+  }
 
   $("go").onclick = async () => {
-    $("go").disabled = true; show("s-progress", true); show("s-done", false); show("s-corr", false); msg("");
+    $("go").disabled = true; show("s-progress", true); show("s-done", false); show("s-corr", false); show("retry", false); msg("");
     const style = document.querySelector('input[name="style"]:checked').value;
     try {
       step(0);
@@ -54,7 +71,7 @@
         (plan.corrections || []).forEach((c) => { c.accepted = false; });
         const r = D.check(doc, plan);
         if (r.ok) break;
-        if (round > 2) throw new Error("自动修正两次后仍未通过校验：" + r.errs.slice(0, 3).join("；") + "。请稍后重试。");
+        if (round > 2) throw fail("大模型的分页方案两次修正后仍有问题，请再试一次；多次失败可以换一份文档", "check_failed", true);
         msg(`校验发现 ${r.errs.length} 处问题，正在让大模型修正（第 ${round} 次）…`);
         j = await askModel(Object.assign({}, base, { session_id: j.session_id, previous_plan: plan, errors: r.errs }));
         plan = j.plan; plan.style = style;
@@ -63,9 +80,12 @@
       if ((plan.corrections || []).length) return askCorrections();
       await finish();
     } catch (e) {
-      msg(e.message || String(e), true); $("go").disabled = false;
+      msg(friendly(e && e.message), true);
+      show("retry", !e || e.retryable !== false);
+      $("go").disabled = false;
     }
   };
+  $("retry").onclick = () => { show("retry", false); $("go").click(); };
 
   function askCorrections() {
     const box = $("corr"); box.innerHTML = "";
@@ -86,7 +106,7 @@
       walk(plan.slides); walk(plan.footer);
     });
     const r = D.check(doc, plan);
-    if (!r.ok) { msg("确认错别字后校验未通过：" + r.errs[0], true); return; }
+    if (!r.ok) { msg("确认错别字后出了点问题，请取消勾选这些错别字再试一次", true); return; }
     show("s-corr", false);
     await finish();
   };

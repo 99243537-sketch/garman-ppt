@@ -33,7 +33,7 @@ PORT = int(os.environ.get("PORT", "8790"))
 DAILY_LIMIT = int(os.environ.get("DAILY_LIMIT", "5"))
 MAX_REPAIRS = int(os.environ.get("MAX_REPAIRS", "2"))
 MAX_DOC_CHARS = int(os.environ.get("MAX_DOC_CHARS", "30000"))
-MAX_OUTPUT_TOKENS = int(os.environ.get("MAX_OUTPUT_TOKENS", "16000"))
+MAX_OUTPUT_TOKENS = int(os.environ.get("MAX_OUTPUT_TOKENS", "24000"))
 TIMEOUT = int(os.environ.get("REQUEST_TIMEOUT", "180"))
 ORIGINS = [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "https://www.zhaodun.work,https://zhaodun.work").split(",") if o.strip()]
 DB = os.environ.get("USAGE_DB", str(HERE / "usage.db"))
@@ -60,24 +60,48 @@ def used_today(c, who):
     return c.execute("select count(*) from usage where day=? and who=? and kind='plan' and ok=1", (today(), who)).fetchone()[0]
 
 
-def extract_json(text):
+class PlanError(Exception):
+    """给学员看的中文错误；code 供前端判断是否自动重试"""
+    def __init__(self, code, msg, retryable=True):
+        super().__init__(msg)
+        self.code, self.msg, self.retryable = code, msg, retryable
+
+
+MSG_PARSE = "大模型这次没有给出完整的分页方案，请再试一次"
+MSG_TRUNC = "文档较长，大模型这次没写完分页方案，请再试一次；多次失败可以把文档拆成两份"
+MSG_UPSTREAM = "大模型服务暂时不可用，请稍后再试"
+
+
+def extract_json(text, truncated=False):
     text = re.sub(r"<think>[\s\S]*?</think>", "", text)
     text = re.sub(r"^```(?:json)?|```$", "", text.strip(), flags=re.M).strip()
     a, b = text.find("{"), text.rfind("}")
     if a < 0 or b <= a:
-        raise ValueError("模型没有返回分页方案")
-    return json.loads(text[a:b + 1])
+        raise PlanError("plan_truncated" if truncated else "plan_parse_failed", MSG_TRUNC if truncated else MSG_PARSE)
+    raw = text[a:b + 1]
+    for cand in (raw, re.sub(r",\s*([}\]])", r"\1", raw)):  # 第二次去掉多余的结尾逗号再试
+        try:
+            plan = json.loads(cand)
+            if isinstance(plan, dict) and isinstance(plan.get("slides"), list):
+                return plan
+        except json.JSONDecodeError:
+            pass
+    raise PlanError("plan_truncated" if truncated else "plan_parse_failed", MSG_TRUNC if truncated else MSG_PARSE)
 
 
 def call_model(messages):
     body = json.dumps({"model": MODEL, "messages": messages, "max_tokens": MAX_OUTPUT_TOKENS, "temperature": 1.0}).encode()
     req = urllib.request.Request(API_BASE + "/chat/completions", data=body, method="POST",
                                  headers={"Authorization": "Bearer " + API_KEY, "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
-        data = json.loads(r.read().decode())
-    if data.get("base_resp", {}).get("status_code", 0) not in (0, None):
-        raise RuntimeError("模型服务返回错误：" + str(data["base_resp"].get("status_msg")))
-    return data["choices"][0]["message"]["content"], data.get("usage", {})
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+            data = json.loads(r.read().decode())
+    except Exception as e:  # 网络、超时、HTTP 错误
+        raise PlanError("upstream_error", MSG_UPSTREAM) from e
+    if (data.get("base_resp") or {}).get("status_code", 0) not in (0, None) or not data.get("choices"):
+        raise PlanError("upstream_error", MSG_UPSTREAM)
+    ch = data["choices"][0]
+    return ch["message"].get("content") or "", data.get("usage", {}), ch.get("finish_reason")
 
 
 def paras_text(paras):
@@ -134,14 +158,14 @@ class H(BaseHTTPRequestHandler):
         try:
             n = int(self.headers.get("Content-Length", "0"))
             if n > 2_000_000:
-                return self.reply(413, {"error": "文档太大"})
+                return self.reply(413, {"error": "文档太大", "code": "too_large", "retryable": False})
             req = json.loads(self.rfile.read(n).decode())
             paras = req.get("paras") or []
             if not paras or not all(isinstance(p, dict) and "id" in p and "text" in p for p in paras):
-                return self.reply(400, {"error": "没有读到文档段落"})
+                return self.reply(400, {"error": "没有读到文档段落", "code": "empty", "retryable": False})
             chars = sum(len(p["text"]) for p in paras)
             if chars > MAX_DOC_CHARS:
-                return self.reply(400, {"error": f"文档太长（{chars} 字），目前最多支持 {MAX_DOC_CHARS} 字"})
+                return self.reply(400, {"error": f"文档太长（{chars} 字），目前最多支持 {MAX_DOC_CHARS} 字", "code": "too_long", "retryable": False})
             ip = self.headers.get("X-Real-IP") or self.headers.get("X-Forwarded-For", "").split(",")[0].strip() or self.client_address[0]
             who = who_of(ip, str(req.get("visitor_id", ""))[:64])
             with lock:
@@ -150,40 +174,45 @@ class H(BaseHTTPRequestHandler):
                 if req.get("errors"):
                     row = c.execute("select who, ts, repairs from sessions where id=?", (sid,)).fetchone() if sid else None
                     if not row or row[0] != who or time.time() - row[1] > 3600:
-                        return self.reply(400, {"error": "修正请求已过期，请重新生成"})
+                        return self.reply(400, {"error": "这次制作已过期，请重新生成", "code": "session_expired", "retryable": False})
                     if row[2] >= MAX_REPAIRS:
-                        return self.reply(429, {"error": "已经自动修正过多次仍未通过，请稍后重新生成或换一份文档"})
-                    c.execute("update sessions set repairs=repairs+1 where id=?", (sid,))
-                    kind = "repair"
+                        return self.reply(429, {"error": "已经自动修正过多次仍未通过，请重新生成，或换一份文档", "code": "repair_exhausted", "retryable": False})
+                    kind = "repair"  # 修正次数在成功后才 +1，失败不占用
                 else:
                     if used_today(c, who) >= DAILY_LIMIT:
-                        return self.reply(429, {"error": f"今天的 {DAILY_LIMIT} 次已经用完，请明天再来"})
+                        return self.reply(429, {"error": f"今天的 {DAILY_LIMIT} 次已经用完，请明天再来", "code": "daily_limit", "retryable": False})
                     sid = uuid.uuid4().hex
                     c.execute("insert into sessions values(?,?,?,0)", (sid, who, time.time()))
                 c.commit()
                 c.close()
             if not API_KEY:
-                return self.reply(500, {"error": "服务器未配置 MINIMAX_API_KEY"})
+                return self.reply(500, {"error": "服务器还没配置好，请联系网站管理员", "code": "server_config", "retryable": False})
+            perr = None
             try:
-                content, usage = call_model(make_messages(req))
-                plan = extract_json(content)
+                content, usage, finish = call_model(make_messages(req))
+                plan = extract_json(content, truncated=(finish == "length"))
                 ok, note = 1, f"tokens={usage.get('total_tokens', '')}"
-            except Exception as e:  # noqa
-                ok, note, plan = 0, type(e).__name__, None
-                err = str(e) if isinstance(e, (ValueError, RuntimeError)) else "模型服务暂时不可用，请稍后再试"
+            except PlanError as e:
+                ok, plan, perr = 0, None, e
+                note = e.code + ("" if e.__cause__ is None else ":" + type(e.__cause__).__name__)
+            except Exception as e:  # noqa  其他意外
+                ok, plan, perr = 0, None, PlanError("server_error", MSG_UPSTREAM)
+                note = "server_error:" + type(e).__name__
             with lock:
                 c = db()
                 c.execute("insert into usage values(?,?,?,?,?,?,?,?)", (time.time(), today(), who, chars, kind, ok, round(time.time() - t0, 1), note))
+                if ok and kind == "repair":
+                    c.execute("update sessions set repairs=repairs+1 where id=?", (sid,))
                 c.commit()
                 left = max(0, DAILY_LIMIT - used_today(c, who))
                 c.close()
             if not ok:
-                return self.reply(502, {"error": err, "session_id": sid})
+                return self.reply(502, {"error": perr.msg, "code": perr.code, "retryable": perr.retryable, "session_id": sid})
             self.reply(200, {"plan": plan, "session_id": sid, "remaining": left, "model": MODEL})
         except json.JSONDecodeError:
-            self.reply(400, {"error": "请求格式不对"})
-        except Exception as e:  # noqa
-            self.reply(500, {"error": "服务器出错：" + type(e).__name__})
+            self.reply(400, {"error": "请求格式不对，请刷新页面后重试", "code": "bad_request", "retryable": False})
+        except Exception:  # noqa
+            self.reply(500, {"error": "服务器出了点问题，请稍后再试", "code": "server_error", "retryable": True})
 
 
 if __name__ == "__main__":
