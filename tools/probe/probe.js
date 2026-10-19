@@ -6,9 +6,9 @@ const path = require("path");
 const os = require("os");
 const pptxgen = require("pptxgenjs");
 const JSZip = require("jszip");
-const BG = require("./bg.js"); // 毛玻璃背景（base64 JPEG）
+const BG = require("./bg.js"); // 毛玻璃：{ bg: 背景, patches: 每个玻璃框的局部压暗图 }（base64 JPEG）
 
-const VERSION = "probe-0.1.0";
+const VERSION = "probe-0.1.1";
 const T = {
   amz: "70C6D6", amzSoft: "DDF1F2", amzPale: "EFF8F9", amzDeep: "1B667A", lapis: "122947", lapisBlue: "315F91",
   mal: "245F4D", pyro: "59652E", van: "B04D2F", gallery: "FAFBF9", white: "FFFFFF", ink: "243335", muted: "53686A", line: "C8D5D4",
@@ -108,13 +108,17 @@ function build(env) {
   s.addNotes("开始之前，先确认 Claude 用的是哪个账号。手里有好几个 Apple 账号的，这一步尤其要做。\n【点击 1】在 Claude App 里打开设置、账户，看登录的邮箱。用 Apple 登录的，显示的是 privaterelay.appleid.com 结尾的隐藏地址。\n【点击 2】到 iPhone 的设置里，点最上面自己的名字，进「通过 Apple 登录」，找到 Claude，看它的隐藏邮件地址。和上一步对得上，就是这个 Apple 账号。「媒体与购买项目」用另一个账号也没关系，不影响。这一页千万不要点「删除」。\n【点击 3】在 Safari 里打开 claude.ai，点「使用 Apple 继续」，用刚才确认的 Apple 账号登录。底部弹出的「使用 Google 账号登录」要点叉关掉。登录后能看到自己以前的对话，就说明账号对了。\n【点击 4 · 全部恢复】账号一定要对上：在别的账号里连 GitHub，这个对话是用不上的。" + CHECK_MASK);
 
   // ===== 第 4 页：测试 C 毛玻璃 · 常见问题 =====
-  s = slide({ data: "image/jpeg;base64," + BG }, { kind: "fade", steps: [["C1"], ["C2"], ["C3"]], end: "K" });
-  const glass = (runs, r, o = {}) => s.addText(runs, {
+  s = slide({ data: "image/jpeg;base64," + BG.bg }, { kind: "fade", steps: [["C1"], ["C2"], ["C3"]], end: "K" });
+  let pn = 0;
+  const glass = (runs, r, o = {}) => { const id = pn++;
+    // 局部压暗图：先作为图片放进本页（让 pptxgenjs 建立图片关系），后处理时改成这个玻璃框的图片填充
+    s.addImage({ data: "image/jpeg;base64," + BG.patches[id], x: r[0], y: r[1], w: r[2], h: r[3], objectName: `patch#p${id}` });
+    return s.addText(runs, {
     shape: pres.shapes.ROUNDED_RECTANGLE, rectRadius: 0.25, x: r[0], y: r[1], w: r[2], h: r[3],
     fill: { color: MARK }, line: { type: "none" }, margin: o.margin ?? [24, 20, 16, 20], // [左, 右, 下, 上]
     valign: o.valign || "middle", align: o.align || "left", fontFace: FONT, color: T.white,
-    lineSpacingMultiple: o.ls || 1.3, objectName: o.g ? `@${o.g}|glass` : "glass",
-  });
+    lineSpacingMultiple: o.ls || 1.3, objectName: o.g ? `@${o.g}|glass#p${id}` : `glass#p${id}`,
+  }); };
   const R = (t, o = {}) => ({ text: t, options: o });
   glass([R("攻略 · 常见问题（测试 C：毛玻璃）", { fontSize: 14, bold: true, color: T.amz, breakLine: true }), R("卡住了，先看这三条", { fontSize: 26, bold: true })], [0.6, 0.4, 9.4, 1.15], { ls: 1.1 });
   const G3 = [["App 里找不到入口", "手机 App 设置里没有连接 GitHub 的地方，改用浏览器打开 claude.ai 操作。"], ["提示找不到仓库", "要么仓库没建成，要么还没在 Claude 的 GitHub App 里勾选这个仓库。"], ["要求再验证身份", "正常的安全确认：用 GitHub Mobile 选对数字，或点邮件发验证码。"]];
@@ -206,11 +210,20 @@ function buildTiming(anim, ids) {
 const GLASS = '<a:ln w="15240"><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="25000"/></a:srgbClr></a:solidFill></a:ln><a:effectLst><a:innerShdw blurRad="317500"><a:schemeClr val="bg1"/></a:innerShdw></a:effectLst>';
 const TSH = '<a:effectLst><a:outerShdw blurRad="50800" dist="38100" dir="2700000" algn="tl" rotWithShape="0"><a:prstClr val="black"><a:alpha val="60000"/></a:prstClr></a:outerShdw></a:effectLst>';
 function glassify(x) {
+  // 1. 取出每块局部压暗图的图片关系 id，并删除这些临时图片
+  const rid = {};
+  x = x.replace(/<p:pic>(?:(?!<\/p:pic>)[\s\S])*?<\/p:pic>/g, (all) => {
+    const m = all.match(/name="patch#p(\d+)"/); if (!m) return all;
+    rid[m[1]] = all.match(/r:embed="([^"]+)"/)[1]; return "";
+  });
+  // 2. 玻璃框：图片填充（局部压暗图）+ 白色内发光 + 细白边；白字加轻投影
   return x.replace(/<p:sp>((?:(?!<\/p:sp>)[\s\S])*?)<\/p:sp>/g, (all, body) => {
     if (!body.includes(`val="${MARK}"`)) return all;
-    body = body.replace(/(<p:spPr>[\s\S]*?<\/a:prstGeom>)[\s\S]*?(<\/p:spPr>)/, `$1${GLASS}$2`);
+    const m = body.match(/glass#p(\d+)/);
+    const fill = m && rid[m[1]] ? `<a:blipFill><a:blip r:embed="${rid[m[1]]}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>` : "<a:noFill/>";
+    body = body.replace(/(<p:spPr>[\s\S]*?<\/a:prstGeom>)[\s\S]*?(<\/p:spPr>)/, `$1${fill}${GLASS}$2`);
     body = body.replace(/(<a:rPr\b[^>]*>(?:(?!<\/a:rPr>)[\s\S])*?<a:srgbClr val="FFFFFF"\/><\/a:solidFill>)/g, `$1${TSH}`);
-    return `<p:sp useBgFill="1">${body}</p:sp>`;
+    return `<p:sp>${body}</p:sp>`;
   });
 }
 

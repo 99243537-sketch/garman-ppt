@@ -58,15 +58,18 @@ dr = ImageDraw.Draw(mask)
 for x, y, w, h in panels:
     dr.rounded_rectangle([x * PPI, y * PPI, (x + w) * PPI, (y + h) * PPI], radius=0.25 * PPI, fill=255)
 m = np.asarray(mask.filter(ImageFilter.GaussianBlur(3)), float)[..., None] / 255
-out = (a * (1 - m) + glass * m).clip(0, 255).astype(np.uint8)
-buf = io.BytesIO()
-Image.fromarray(out).save(buf, "JPEG", quality=88)
-open(sys.argv[1], "wb").write(buf.getvalue())
-
-# 对比度报告
-o = out.astype(float)
+comp = (a * (1 - m) + glass * m).clip(0, 255).astype(np.uint8)
+plain = a.clip(0, 255).astype(np.uint8)
+def jpg(arr):
+    b = io.BytesIO(); Image.fromarray(arr).save(b, "JPEG", quality=88); return base64.b64encode(b.getvalue()).decode()
+# 背景只做模糊和整体压暗；每个玻璃框单独裁一块「局部压暗」的图，作为该框的图片填充
+patches = []
+o = comp.astype(float)
 for x, y, w, h in panels:
+    x0, y0, x1, y1 = round(x * PPI), round(y * PPI), round((x + w) * PPI), round((y + h) * PPI)
+    patches.append(jpg(comp[y0:y1, x0:x1]))
     i = 0.25
     reg = lum(o[int((y + i) * PPI):int((y + h - i) * PPI), int((x + i) * PPI):int((x + w - i) * PPI)])
     print("panel", (x, y, w, h), "白字对比度", round(ratio(1.0, np.percentile(reg, 99.5)), 2))
-print("bytes", len(buf.getvalue()))
+open(sys.argv[1], "w").write("module.exports=" + json.dumps({"bg": jpg(plain), "patches": patches}) + ";\n")
+print("ok", len(patches))

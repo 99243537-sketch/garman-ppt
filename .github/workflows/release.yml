@@ -9,8 +9,8 @@ on:
 permissions:
   contents: write
 env:
-  TAG: v0.1.0-probe
-  ASSET: mineral-ppt-probe-0.1.0.zip
+  TAG: v0.1.1-probe
+  ASSET: mineral-ppt-probe-0.1.1.zip
 jobs:
   release:
     runs-on: ubuntu-latest
