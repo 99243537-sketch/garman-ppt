@@ -101,7 +101,7 @@ function applyCorrections(doc, plan) {
 }
 
 // ---------- 生成 ----------
-async function build(doc, plan) {
+async function build(doc, plan, opts = {}) {
   const { P } = applyCorrections(doc, plan);
   const ex = (ref) => ref[1];
   const body = (ids) => (ids || []).map((i) => P[i]).join("\n");
@@ -210,8 +210,9 @@ async function build(doc, plan) {
       s.addNotes(body(d.notes));
     }
   });
-  const raw = await pres.write({ outputType: "nodebuffer" });
-  return postProcess(raw, ANIM);
+  // Node 用 nodebuffer；浏览器用 arraybuffer → 输出 Blob
+  const raw = await pres.write({ outputType: opts.browser ? "arraybuffer" : "nodebuffer" });
+  return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer");
 }
 
 module.exports = { check, build, applyCorrections, TYPES };

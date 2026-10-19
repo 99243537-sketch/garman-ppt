@@ -1,0 +1,13 @@
+[Unit]
+Description=天然矿物色 PPT 讲稿制作 · 分页方案服务
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/ppt-planner
+ExecStart=/usr/bin/python3 /opt/ppt-planner/app.py
+Restart=always
+RestartSec=3
+User=admin
+
+[Install]
+WantedBy=multi-user.target

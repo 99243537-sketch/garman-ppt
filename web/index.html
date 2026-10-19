@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>天然矿物色 PPT 讲稿制作</title>
+<style>
+  :root { --lapis:#122947; --amz:#70C6D6; --amzDeep:#1B667A; --amzPale:#EFF8F9; --amzSoft:#DDF1F2; --ink:#243335; --muted:#53686A; --line:#C8D5D4; --van:#B04D2F; --white:#FFFFFF; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--amzPale); color:var(--ink); font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif; line-height:1.6; }
+  header { background:var(--lapis); color:var(--white); padding:28px 16px 24px; }
+  header .wrap, main { max-width:760px; margin:0 auto; }
+  header small { color:var(--amz); letter-spacing:1px; }
+  h1 { margin:4px 0 6px; font-size:28px; }
+  header p { margin:0; color:var(--amzSoft); }
+  main { padding:20px 16px 40px; }
+  .card { background:var(--white); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:16px; }
+  .card h2 { font-size:18px; margin:0 0 12px; color:var(--lapis); }
+  .notice { border-left:4px solid var(--van); background:#fff; padding:12px 14px; border-radius:6px; margin-bottom:16px; font-size:14px; }
+  .drop { border:2px dashed var(--line); border-radius:10px; padding:28px 12px; text-align:center; cursor:pointer; background:var(--amzPale); }
+  .drop.on { border-color:var(--amzDeep); background:var(--amzSoft); }
+  .drop b { color:var(--amzDeep); }
+  .opts { display:flex; gap:12px; flex-wrap:wrap; margin:14px 0; }
+  .opt { flex:1 1 220px; border:1px solid var(--line); border-radius:8px; padding:10px 12px; cursor:pointer; }
+  .opt input { margin-right:6px; }
+  .opt span { display:block; font-size:13px; color:var(--muted); margin-left:22px; }
+  label.agree { display:block; font-size:14px; margin:8px 0 14px; }
+  button { background:var(--lapis); color:#fff; border:0; border-radius:8px; padding:12px 22px; font-size:16px; cursor:pointer; font-family:inherit; }
+  button:disabled { background:#8a99a8; cursor:not-allowed; }
+  button.sec { background:var(--white); color:var(--lapis); border:1px solid var(--lapis); }
+  ol.steps { padding-left:20px; margin:0; }
+  ol.steps li { margin:4px 0; color:var(--muted); }
+  ol.steps li.doing { color:var(--amzDeep); font-weight:bold; }
+  ol.steps li.done { color:var(--ink); }
+  ol.steps li.done::after { content:" ✓"; color:var(--amzDeep); }
+  .err { color:var(--van); font-weight:bold; }
+  .fix { font-size:14px; color:var(--muted); }
+  .corr label { display:block; padding:8px 0; border-bottom:1px solid var(--amzSoft); }
+  .row { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .hide { display:none; }
+  footer { text-align:center; font-size:13px; color:var(--muted); padding:0 16px 30px; }
+  footer a { color:var(--amzDeep); }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <small>赵盾 AI 学习工作室</small>
+  <h1>天然矿物色 PPT 讲稿制作</h1>
+  <p>上传已经定稿的文档，生成可编辑的 PPT：页面只放原文摘句，完整原文放进讲稿备注，卡片带讲课动画。</p>
+</div></header>
+<main>
+  <div class="notice"><b>请勿上传涉密材料。</b>含个人信息（姓名、身份证号、手机号等）的文档请先脱敏。文件在你的浏览器里读取和生成，本站不保存；只有段落文字会发送给大模型（MiniMax）做分页。</div>
+
+  <section class="card" id="s-input">
+    <h2>1. 选择文档</h2>
+    <div class="drop" id="drop"><b>点击选择</b>或把文件拖到这里<br><small>支持 .docx、.md、.txt，最多 3 万字；.doc 请先另存为 .docx</small><div id="fname"></div></div>
+    <input type="file" id="file" accept=".docx,.md,.txt,.markdown" class="hide">
+    <div class="opts">
+      <label class="opt"><input type="radio" name="style" value="normal" checked>普通效果<span>浅色底、白色卡片，清爽正式</span></label>
+      <label class="opt"><input type="radio" name="style" value="glass">毛玻璃效果<span>深色模糊矿物背景、半透明玻璃卡片</span></label>
+    </div>
+    <label class="agree"><input type="checkbox" id="agree"> 我确认文档不含涉密内容，个人信息已脱敏。</label>
+    <button id="go" disabled>生成 PPT</button>
+  </section>
+
+  <section class="card hide" id="s-progress">
+    <h2>2. 正在制作</h2>
+    <ol class="steps" id="steps">
+      <li>读取文档、整理段落</li>
+      <li>大模型分页、挑选原文摘句（约 1–2 分钟）</li>
+      <li>逐字校验，必要时自动修正</li>
+      <li>排版生成 PPT</li>
+    </ol>
+    <p id="msg" class="fix"></p>
+  </section>
+
+  <section class="card hide" id="s-corr">
+    <h2>请确认错别字</h2>
+    <p class="fix">勾选同意修改的条目；不勾的保持原样。修改会同时用于页面和讲稿备注。</p>
+    <div class="corr" id="corr"></div>
+    <div class="row"><button id="corr-ok">确认并生成</button></div>
+  </section>
+
+  <section class="card hide" id="s-done">
+    <h2>3. 完成</h2>
+    <p id="summary"></p>
+    <div class="row"><button id="dl">下载 PPT</button><button class="sec" id="dl-rep">下载生成报告</button><button class="sec" id="again">再做一份</button></div>
+    <p class="fix">请用 PowerPoint 或 WPS 放映检查一遍；手机预览可能替换字体、看不到动画。</p>
+  </section>
+</main>
+<footer>配色：赵盾矿物色彩系统 v2.3 · <a href="/color/">色彩规范</a> · 分页：MiniMax 大模型 · 生成工具 doc2ppt <span id="ver"></span><br><span id="left"></span></footer>
+<script src="doc2ppt.browser.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

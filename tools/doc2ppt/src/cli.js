@@ -6,8 +6,9 @@
 const fs = require("fs");
 const path = require("path");
 const { parse } = require("./parse.js");
-const { check, build, applyCorrections } = require("./core.js");
-const VERSION = "0.2.1";
+const { check, build } = require("./core.js");
+const { makeReport } = require("./report.js");
+const { VERSION } = require("./version.js");
 const log = (...a) => console.log(...a);
 const die = (m, code = 1) => { console.error(m); process.exit(code); };
 const readJSON = (f) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch (e) { die(`读不了 ${f}：${e.message}`); } };
@@ -42,22 +43,8 @@ function printCheck(r) {
     if (cmd === "check") return;
     const out = b || path.join(a, (doc.source || "演示文稿").replace(/\.[^.]+$/, "") + ".pptx");
     fs.writeFileSync(out, await build(doc, plan));
-    const { applied } = applyCorrections(doc, plan);
-    const pending = (plan.corrections || []).filter((c) => !c.accepted);
-    const rep = [
-      `# 生成报告：${doc.source}`, "",
-      `- 文件：${path.basename(out)}，共 ${plan.slides.length} 页。生成工具 doc2ppt ${VERSION}。`,
-      `- 原文 ${doc.paras.length} 段全部放进讲稿备注；页面上的每句话都能在原文中逐字找到。`,
-      "- 卡片页带讲课动画：逐张出现、上一张变淡，最后一次点击全部恢复（有结论句时同时出现）。",
-      "- 配色：赵盾矿物色彩系统 v2.3；字体：微软雅黑。", "",
-      "## 排版修正（未改任何字）", "", ...(doc.fixes.length ? doc.fixes.map((f, k) => `${k + 1}. ${f}`) : ["无。"]), "",
-      "## 错别字", "", ...(applied.length ? applied.map((c, k) => `${k + 1}. 已改：${c.para}「${c.from}」→「${c.to}」`) : []),
-      ...(pending.length ? pending.map((c, k) => `${k + 1}. 待确认（未改）：${c.para}「${c.from}」→「${c.to}」${c.reason ? "（" + c.reason + "）" : ""}`) : []),
-      ...(!applied.length && !pending.length ? ["未发现。"] : []), "",
-      "## 其他提示", "", ...(doc.notes.length ? doc.notes : []), ...r.warns, "页面上不是原文的文字只有模板用语「目录」「谢谢」。",
-      "请在 PowerPoint 或 WPS 里放映检查一遍；预览软件可能替换字体。",
-    ];
-    fs.writeFileSync(path.join(path.dirname(out), "生成报告.md"), rep.join("\n") + "\n");
+    const rep = makeReport(doc, plan, path.basename(out), r.warns, VERSION);
+    fs.writeFileSync(path.join(path.dirname(out), "生成报告.md"), rep);
     log(`已生成：${out}`);
     log(`生成报告：${path.join(path.dirname(out), "生成报告.md")}`);
   } else {

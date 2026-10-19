@@ -9763,12 +9763,11 @@ var require_lib3 = __commonJS({
 // src/parse.js
 var require_parse = __commonJS({
   "src/parse.js"(exports2, module2) {
-    var fs2 = require("fs");
     var path2 = require("path");
     var JSZip = require_lib3();
     var unxml = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
-    async function readDocx(file) {
-      const zip = await JSZip.loadAsync(fs2.readFileSync(file));
+    async function readDocx(data) {
+      const zip = await JSZip.loadAsync(data);
       const xml = await zip.file("word/document.xml").async("string");
       const body = xml.slice(xml.indexOf("<w:body"));
       const sx = zip.file("word/styles.xml") ? await zip.file("word/styles.xml").async("string") : "";
@@ -9790,9 +9789,9 @@ var require_parse = __commonJS({
       }
       return { paras: out, tables, images };
     }
-    function readText(file) {
-      const raw = fs2.readFileSync(file, "utf8").replace(/^﻿/, "").replace(/\r\n?/g, "\n");
-      const md = /\.md$/i.test(file);
+    function readText(name, data) {
+      const raw = (typeof data === "string" ? data : new TextDecoder("utf-8").decode(data)).replace(/^﻿/, "").replace(/\r\n?/g, "\n");
+      const md = /\.(md|markdown)$/i.test(name);
       const out = [];
       for (let line of raw.split("\n")) {
         line = line.trim();
@@ -9835,19 +9834,22 @@ var require_parse = __commonJS({
       });
       return { paras, fixes };
     }
-    async function parse2(file) {
-      const ext = path2.extname(file).toLowerCase();
+    async function parseData(name, data) {
+      const ext = (name.match(/\.[^.]+$/) || [""])[0].toLowerCase();
       let r;
-      if (ext === ".docx") r = await readDocx(file);
-      else if (ext === ".md" || ext === ".txt" || ext === ".markdown") r = readText(file);
-      else throw new Error("\u6682\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF1A" + ext + "\uFF08\u652F\u6301 .docx\u3001.md\u3001.txt\uFF1B.doc \u8BF7\u5148\u53E6\u5B58\u4E3A .docx\uFF09");
+      if (ext === ".docx") r = await readDocx(data);
+      else if (ext === ".md" || ext === ".txt" || ext === ".markdown") r = readText(name, data);
+      else throw new Error("\u6682\u4E0D\u652F\u6301\u7684\u6587\u4EF6\u683C\u5F0F\uFF1A" + (ext || "\u672A\u77E5") + "\uFF08\u652F\u6301 .docx\u3001.md\u3001.txt\uFF1B.doc \u8BF7\u5148\u53E6\u5B58\u4E3A .docx\uFF09");
       const { paras, fixes } = clean(r.paras);
       const notes = [];
       if (r.tables) notes.push(`\u539F\u6587\u6709 ${r.tables} \u4E2A\u8868\u683C\uFF0C\u8868\u683C\u5185\u5BB9\u672A\u4E0A\u9875\u9762\uFF0C\u8BF7\u81EA\u884C\u8865\u5145\u3002`);
       if (r.images) notes.push(`\u539F\u6587\u6709 ${r.images} \u5F20\u56FE\u7247\uFF0C\u672A\u4E0A\u9875\u9762\uFF0C\u8BF7\u81EA\u884C\u8865\u5145\u3002`);
-      return { source: path2.basename(file), paras, fixes, notes };
+      return { source: name.split(/[\\/]/).pop(), paras, fixes, notes };
     }
-    module2.exports = { parse: parse2 };
+    async function parse2(file) {
+      return parseData(path2.basename(file), require("fs").readFileSync(file));
+    }
+    module2.exports = { parse: parse2, parseData };
   }
 });
 
@@ -15290,7 +15292,7 @@ var require_post = __commonJS({
         return `<p:sp>${body}</p:sp>`;
       });
     }
-    async function postProcess(buf, ANIM) {
+    async function postProcess(buf, ANIM, outType = "nodebuffer") {
       const zip = await JSZip.loadAsync(buf);
       let th = await zip.file("ppt/theme/theme1.xml").async("string");
       const scheme = `<a:clrScheme name="\u8D75\u76FE\u77FF\u7269\u8272\u5F69 v2.3">` + SLOTS.map((k) => `<a:${k}><a:srgbClr val="${THEME[k]}"/></a:${k}>`).join("") + "</a:clrScheme>";
@@ -15309,7 +15311,7 @@ var require_post = __commonJS({
         else if (Object.keys(ids).length) throw new Error("\u6709\u7EC4\u5408\u4F46\u6CA1\u6709\u52A8\u753B\uFF1A" + part);
         zip.file(part, xml);
       }
-      return zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
+      return zip.generateAsync({ type: outType, compression: "DEFLATE", mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
     }
     module2.exports = { postProcess };
   }
@@ -15346,7 +15348,7 @@ var require_core = __commonJS({
     }
     var CARD = { headTop: 0.9, headH: 1.25, ruleY: 2.25, bodyTop: 2.4, pad: 0.3 };
     function check2(doc, plan) {
-      const P = applyCorrections2(doc, plan).P;
+      const P = applyCorrections(doc, plan).P;
       const errs = [], warns = [];
       const at = (i, k) => `\u7B2C ${i + 1} \u9875${k ? "\u300C" + k + "\u300D" : ""}`;
       const ex = (ref, where) => {
@@ -15445,7 +15447,7 @@ var require_core = __commonJS({
       });
       return { ok: !errs.length, errs, warns };
     }
-    function applyCorrections2(doc, plan) {
+    function applyCorrections(doc, plan) {
       const P = Object.fromEntries(doc.paras.map((p) => [p.id, p.text]));
       const applied = [];
       for (const c of plan && plan.corrections || []) if (c.accepted && P[c.para] && P[c.para].includes(c.from)) {
@@ -15454,8 +15456,8 @@ var require_core = __commonJS({
       }
       return { P, applied };
     }
-    async function build2(doc, plan) {
-      const { P } = applyCorrections2(doc, plan);
+    async function build2(doc, plan, opts = {}) {
+      const { P } = applyCorrections(doc, plan);
       const ex = (ref) => ref[1];
       const body = (ids) => (ids || []).map((i) => P[i]).join("\n");
       const footer = plan.footer ? ex(plan.footer) : "";
@@ -15587,10 +15589,54 @@ var require_core = __commonJS({
           s.addNotes(body(d.notes));
         }
       });
-      const raw = await pres.write({ outputType: "nodebuffer" });
-      return postProcess(raw, ANIM);
+      const raw = await pres.write({ outputType: opts.browser ? "arraybuffer" : "nodebuffer" });
+      return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer");
     }
-    module2.exports = { check: check2, build: build2, applyCorrections: applyCorrections2, TYPES };
+    module2.exports = { check: check2, build: build2, applyCorrections, TYPES };
+  }
+});
+
+// src/report.js
+var require_report = __commonJS({
+  "src/report.js"(exports2, module2) {
+    var { applyCorrections } = require_core();
+    function makeReport2(doc, plan, fileName, warns, version) {
+      const { applied } = applyCorrections(doc, plan);
+      const pending = (plan.corrections || []).filter((c) => !c.accepted);
+      return [
+        `# \u751F\u6210\u62A5\u544A\uFF1A${doc.source}`,
+        "",
+        `- \u6587\u4EF6\uFF1A${fileName}\uFF0C\u5171 ${plan.slides.length} \u9875\u3002\u751F\u6210\u5DE5\u5177 doc2ppt ${version}\u3002`,
+        `- \u539F\u6587 ${doc.paras.length} \u6BB5\u5168\u90E8\u653E\u8FDB\u8BB2\u7A3F\u5907\u6CE8\uFF1B\u9875\u9762\u4E0A\u7684\u6BCF\u53E5\u8BDD\u90FD\u80FD\u5728\u539F\u6587\u4E2D\u9010\u5B57\u627E\u5230\u3002`,
+        "- \u5361\u7247\u9875\u5E26\u8BB2\u8BFE\u52A8\u753B\uFF1A\u9010\u5F20\u51FA\u73B0\u3001\u4E0A\u4E00\u5F20\u53D8\u6DE1\uFF0C\u6700\u540E\u4E00\u6B21\u70B9\u51FB\u5168\u90E8\u6062\u590D\uFF08\u6709\u7ED3\u8BBA\u53E5\u65F6\u540C\u65F6\u51FA\u73B0\uFF09\u3002",
+        `- \u6548\u679C\uFF1A${plan.style === "glass" ? "\u6BDB\u73BB\u7483" : "\u666E\u901A"}\uFF1B\u914D\u8272\uFF1A\u8D75\u76FE\u77FF\u7269\u8272\u5F69\u7CFB\u7EDF v2.3\uFF1B\u5B57\u4F53\uFF1A\u5FAE\u8F6F\u96C5\u9ED1\u3002`,
+        "",
+        "## \u6392\u7248\u4FEE\u6B63\uFF08\u672A\u6539\u4EFB\u4F55\u5B57\uFF09",
+        "",
+        ...doc.fixes.length ? doc.fixes.map((f, k) => `${k + 1}. ${f}`) : ["\u65E0\u3002"],
+        "",
+        "## \u9519\u522B\u5B57",
+        "",
+        ...applied.map((c, k) => `${k + 1}. \u5DF2\u6539\uFF1A${c.para}\u300C${c.from}\u300D\u2192\u300C${c.to}\u300D`),
+        ...pending.map((c, k) => `${k + 1}. \u5F85\u786E\u8BA4\uFF08\u672A\u6539\uFF09\uFF1A${c.para}\u300C${c.from}\u300D\u2192\u300C${c.to}\u300D${c.reason ? "\uFF08" + c.reason + "\uFF09" : ""}`),
+        ...!applied.length && !pending.length ? ["\u672A\u53D1\u73B0\u3002"] : [],
+        "",
+        "## \u5176\u4ED6\u63D0\u793A",
+        "",
+        ...doc.notes,
+        ...warns || [],
+        "\u9875\u9762\u4E0A\u4E0D\u662F\u539F\u6587\u7684\u6587\u5B57\u53EA\u6709\u6A21\u677F\u7528\u8BED\u300C\u76EE\u5F55\u300D\u300C\u8C22\u8C22\u300D\u3002",
+        "\u8BF7\u5728 PowerPoint \u6216 WPS \u91CC\u653E\u6620\u68C0\u67E5\u4E00\u904D\uFF1B\u9884\u89C8\u8F6F\u4EF6\u53EF\u80FD\u66FF\u6362\u5B57\u4F53\u3002"
+      ].join("\n") + "\n";
+    }
+    module2.exports = { makeReport: makeReport2 };
+  }
+});
+
+// src/version.js
+var require_version = __commonJS({
+  "src/version.js"(exports2, module2) {
+    module2.exports = { VERSION: "0.2.1" };
   }
 });
 
@@ -15598,8 +15644,9 @@ var require_core = __commonJS({
 var fs = require("fs");
 var path = require("path");
 var { parse } = require_parse();
-var { check, build, applyCorrections } = require_core();
-var VERSION = "0.2.1";
+var { check, build } = require_core();
+var { makeReport } = require_report();
+var { VERSION } = require_version();
 var log = (...a) => console.log(...a);
 var die = (m, code = 1) => {
   console.error(m);
@@ -15644,34 +15691,8 @@ function printCheck(r) {
     if (cmd === "check") return;
     const out = b || path.join(a, (doc.source || "\u6F14\u793A\u6587\u7A3F").replace(/\.[^.]+$/, "") + ".pptx");
     fs.writeFileSync(out, await build(doc, plan));
-    const { applied } = applyCorrections(doc, plan);
-    const pending = (plan.corrections || []).filter((c) => !c.accepted);
-    const rep = [
-      `# \u751F\u6210\u62A5\u544A\uFF1A${doc.source}`,
-      "",
-      `- \u6587\u4EF6\uFF1A${path.basename(out)}\uFF0C\u5171 ${plan.slides.length} \u9875\u3002\u751F\u6210\u5DE5\u5177 doc2ppt ${VERSION}\u3002`,
-      `- \u539F\u6587 ${doc.paras.length} \u6BB5\u5168\u90E8\u653E\u8FDB\u8BB2\u7A3F\u5907\u6CE8\uFF1B\u9875\u9762\u4E0A\u7684\u6BCF\u53E5\u8BDD\u90FD\u80FD\u5728\u539F\u6587\u4E2D\u9010\u5B57\u627E\u5230\u3002`,
-      "- \u5361\u7247\u9875\u5E26\u8BB2\u8BFE\u52A8\u753B\uFF1A\u9010\u5F20\u51FA\u73B0\u3001\u4E0A\u4E00\u5F20\u53D8\u6DE1\uFF0C\u6700\u540E\u4E00\u6B21\u70B9\u51FB\u5168\u90E8\u6062\u590D\uFF08\u6709\u7ED3\u8BBA\u53E5\u65F6\u540C\u65F6\u51FA\u73B0\uFF09\u3002",
-      "- \u914D\u8272\uFF1A\u8D75\u76FE\u77FF\u7269\u8272\u5F69\u7CFB\u7EDF v2.3\uFF1B\u5B57\u4F53\uFF1A\u5FAE\u8F6F\u96C5\u9ED1\u3002",
-      "",
-      "## \u6392\u7248\u4FEE\u6B63\uFF08\u672A\u6539\u4EFB\u4F55\u5B57\uFF09",
-      "",
-      ...doc.fixes.length ? doc.fixes.map((f, k) => `${k + 1}. ${f}`) : ["\u65E0\u3002"],
-      "",
-      "## \u9519\u522B\u5B57",
-      "",
-      ...applied.length ? applied.map((c, k) => `${k + 1}. \u5DF2\u6539\uFF1A${c.para}\u300C${c.from}\u300D\u2192\u300C${c.to}\u300D`) : [],
-      ...pending.length ? pending.map((c, k) => `${k + 1}. \u5F85\u786E\u8BA4\uFF08\u672A\u6539\uFF09\uFF1A${c.para}\u300C${c.from}\u300D\u2192\u300C${c.to}\u300D${c.reason ? "\uFF08" + c.reason + "\uFF09" : ""}`) : [],
-      ...!applied.length && !pending.length ? ["\u672A\u53D1\u73B0\u3002"] : [],
-      "",
-      "## \u5176\u4ED6\u63D0\u793A",
-      "",
-      ...doc.notes.length ? doc.notes : [],
-      ...r.warns,
-      "\u9875\u9762\u4E0A\u4E0D\u662F\u539F\u6587\u7684\u6587\u5B57\u53EA\u6709\u6A21\u677F\u7528\u8BED\u300C\u76EE\u5F55\u300D\u300C\u8C22\u8C22\u300D\u3002",
-      "\u8BF7\u5728 PowerPoint \u6216 WPS \u91CC\u653E\u6620\u68C0\u67E5\u4E00\u904D\uFF1B\u9884\u89C8\u8F6F\u4EF6\u53EF\u80FD\u66FF\u6362\u5B57\u4F53\u3002"
-    ];
-    fs.writeFileSync(path.join(path.dirname(out), "\u751F\u6210\u62A5\u544A.md"), rep.join("\n") + "\n");
+    const rep = makeReport(doc, plan, path.basename(out), r.warns, VERSION);
+    fs.writeFileSync(path.join(path.dirname(out), "\u751F\u6210\u62A5\u544A.md"), rep);
     log(`\u5DF2\u751F\u6210\uFF1A${out}`);
     log(`\u751F\u6210\u62A5\u544A\uFF1A${path.join(path.dirname(out), "\u751F\u6210\u62A5\u544A.md")}`);
   } else {

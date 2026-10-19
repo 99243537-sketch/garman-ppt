@@ -85,7 +85,7 @@ function glassify(x) {
   });
 }
 
-async function postProcess(buf, ANIM) {
+async function postProcess(buf, ANIM, outType = "nodebuffer") {
   const zip = await JSZip.loadAsync(buf);
   let th = await zip.file("ppt/theme/theme1.xml").async("string");
   const scheme = `<a:clrScheme name="赵盾矿物色彩 v2.3">` + SLOTS.map((k) => `<a:${k}><a:srgbClr val="${THEME[k]}"/></a:${k}>`).join("") + "</a:clrScheme>";
@@ -106,7 +106,7 @@ async function postProcess(buf, ANIM) {
     else if (Object.keys(ids).length) throw new Error("有组合但没有动画：" + part);
     zip.file(part, xml);
   }
-  return zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
+  return zip.generateAsync({ type: outType, compression: "DEFLATE", mimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
 }
 
 

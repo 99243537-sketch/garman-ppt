@@ -9,7 +9,9 @@
 | 路径 | 内容 |
 |---|---|
 | `skill/mineral-ppt/` | 正式技能：文档转 PPT（单文件脚本，无需 npm install） |
-| `tools/doc2ppt/` | 正式技能源码 |
+| `tools/doc2ppt/` | 正式技能源码（Node 与浏览器共用） |
+| `web/` | 网页版前端（部署到 zhaodun.work/ppt/） |
+| `server/` | 网页版后端：分页方案服务 ppt-planner（调用 MiniMax） |
 | `skill-probe/mineral-ppt-probe/` | 兼容性测试技能（单文件脚本，无需 npm install） |
 | `tools/probe/` | 测试技能源码与打包说明 |
 | `docs/` | 设计说明、交接记录、攻略 |

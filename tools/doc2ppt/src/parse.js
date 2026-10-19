@@ -1,12 +1,11 @@
 // 读文档 → 带编号的段落（P001…），并记录排版修正（不改字）
-const fs = require("fs");
-const path = require("path");
+
 const JSZip = require("jszip");
 
 const unxml = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
 
-async function readDocx(file) {
-  const zip = await JSZip.loadAsync(fs.readFileSync(file));
+async function readDocx(data) {
+  const zip = await JSZip.loadAsync(data);
   const xml = await zip.file("word/document.xml").async("string");
   const body = xml.slice(xml.indexOf("<w:body"));
   // 样式 id → 名称（id 可能是数字，只有名称才能判断是不是标题）
@@ -31,9 +30,9 @@ async function readDocx(file) {
   return { paras: out, tables, images };
 }
 
-function readText(file) {
-  const raw = fs.readFileSync(file, "utf8").replace(/^﻿/, "").replace(/\r\n?/g, "\n");
-  const md = /\.md$/i.test(file);
+function readText(name, data) {
+  const raw = (typeof data === "string" ? data : new TextDecoder("utf-8").decode(data)).replace(/^﻿/, "").replace(/\r\n?/g, "\n");
+  const md = /\.(md|markdown)$/i.test(name);
   const out = [];
   for (let line of raw.split("\n")) {
     line = line.trim();
@@ -75,17 +74,22 @@ function clean(list) {
   return { paras, fixes };
 }
 
-async function parse(file) {
-  const ext = path.extname(file).toLowerCase();
+// 浏览器和 Node 共用：name 为文件名，data 为 ArrayBuffer / Buffer
+async function parseData(name, data) {
+  const ext = (name.match(/\.[^.]+$/) || [""])[0].toLowerCase();
   let r;
-  if (ext === ".docx") r = await readDocx(file);
-  else if (ext === ".md" || ext === ".txt" || ext === ".markdown") r = readText(file);
-  else throw new Error("暂不支持的文件格式：" + ext + "（支持 .docx、.md、.txt；.doc 请先另存为 .docx）");
+  if (ext === ".docx") r = await readDocx(data);
+  else if (ext === ".md" || ext === ".txt" || ext === ".markdown") r = readText(name, data);
+  else throw new Error("暂不支持的文件格式：" + (ext || "未知") + "（支持 .docx、.md、.txt；.doc 请先另存为 .docx）");
   const { paras, fixes } = clean(r.paras);
   const notes = [];
   if (r.tables) notes.push(`原文有 ${r.tables} 个表格，表格内容未上页面，请自行补充。`);
   if (r.images) notes.push(`原文有 ${r.images} 张图片，未上页面，请自行补充。`);
-  return { source: path.basename(file), paras, fixes, notes };
+  return { source: name.split(/[\\/]/).pop(), paras, fixes, notes };
 }
 
-module.exports = { parse };
+async function parse(file) {
+  return parseData(file.split(/[\\/]/).pop(), require("fs").readFileSync(file));
+}
+
+module.exports = { parse, parseData };
