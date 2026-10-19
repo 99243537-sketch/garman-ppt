@@ -7,7 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const { parse } = require("./parse.js");
 const { check, build, applyCorrections } = require("./core.js");
-const VERSION = "0.2.0";
+const VERSION = "0.2.1";
 const log = (...a) => console.log(...a);
 const die = (m, code = 1) => { console.error(m); process.exit(code); };
 const readJSON = (f) => { try { return JSON.parse(fs.readFileSync(f, "utf8")); } catch (e) { die(`读不了 ${f}：${e.message}`); } };

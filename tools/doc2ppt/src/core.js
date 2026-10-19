@@ -1,6 +1,8 @@
 // 分页方案校验 + 排版生成（普通效果，赵盾矿物色彩 v2.3，微软雅黑）
 const pptxgen = require("pptxgenjs");
 const { postProcess } = require("./post.js");
+const GBG = require("./glassbg.js");
+const MARK = "0A0B0C";
 
 const T = { amz: "70C6D6", amzSoft: "DDF1F2", amzPale: "EFF8F9", amzDeep: "1B667A", lapis: "122947", van: "B04D2F", white: "FFFFFF", ink: "243335", muted: "53686A", line: "C8D5D4" };
 const W = 13.333, M = 0.6, FONT = "Microsoft YaHei";
@@ -37,6 +39,7 @@ function check(doc, plan) {
   const take = (ids, where) => (ids || []).forEach((id) => { if (!P[id]) errs.push(`${where}：备注引用了不存在的段落 ${id}`); used.push(id); });
   if (!plan || !Array.isArray(plan.slides) || !plan.slides.length) return { ok: false, errs: ["方案里没有 slides"], warns };
   if (plan.footer) ex(plan.footer, "页脚 footer");
+  if (plan.style && !["normal", "glass"].includes(plan.style)) errs.push(`style 只能是 "normal"（普通）或 "glass"（毛玻璃）`);
   plan.slides.forEach((s, i) => {
     if (!TYPES.includes(s.type)) { errs.push(`${at(i)}：页面类型 ${s.type} 不存在，只能用 ${TYPES.join("、")}`); return; }
     const w = at(i, s.type);
@@ -106,36 +109,49 @@ async function build(doc, plan) {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE"; pres.title = footer || "演示文稿"; pres.author = ""; pres.company = "";
   pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
+  // 效果：普通（默认）或毛玻璃（"style": "glass"）
+  const G = plan.style === "glass";
+  const C = G ? { title: T.white, kicker: T.amz, ink: T.white, muted: T.amzSoft, rule: T.white, concl: T.amz, mark: T.amz, arrow: T.amz }
+              : { title: T.lapis, kicker: T.amzDeep, ink: T.ink, muted: T.muted, rule: T.line, concl: T.van, mark: T.amzDeep, arrow: T.amzDeep };
   const ANIM = [];
   let n = 0;
   const nm = (g, p) => (g ? `@${g}|${++n}` : `${p}-${++n}`);
-  const txt = (s, t, o = {}) => { const { g, ...r } = o; s.addText(t, Object.assign({ isTextBox: true, margin: 0, fontSize: 16, fontFace: FONT, color: T.ink, valign: "top", objectName: nm(g, "text") }, r)); };
-  const box = (s, x, y, w, h, o = {}) => s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.08, fill: { color: o.fill || T.white }, line: { color: T.line, width: 0.75 }, objectName: nm(o.g, "card") });
+  const txt = (s, t, o = {}) => { const { g, ...r } = o; s.addText(t, Object.assign({ isTextBox: true, margin: 0, fontSize: 16, fontFace: FONT, color: C.ink, valign: "top", objectName: nm(g, "text") }, r)); };
+  const box = (s, x, y, w, h, o = {}) => G ? s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.12, fill: { color: MARK }, line: { type: "none" }, objectName: nm(o.g, "glass") }) : s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.08, fill: { color: o.fill || T.white }, line: { color: T.line, width: 0.75 }, objectName: nm(o.g, "card") });
   const chip = (s, x, y, label, o = {}) => {
     const w = em(String(label)) > 1 ? 0.24 + 0.26 * em(String(label)) : 0.46;
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.46, rectRadius: 0.06, fill: { color: T.amz }, line: { color: T.amz, width: 0 }, objectName: nm(o.g, "chip") });
     txt(s, String(label), { g: o.g, x, y, w, h: 0.46, fontSize: 14, bold: true, color: T.lapis, align: "center", valign: "middle" });
   };
   const foot = (s, i, color) => {
-    if (footer) txt(s, footer, { x: M, y: 6.98, w: 10, h: 0.3, fontSize: 10, color: color || T.muted, valign: "middle" });
-    txt(s, String(i), { x: W - M - 0.6, y: 6.98, w: 0.6, h: 0.3, fontSize: 10, color: color || T.muted, align: "right", valign: "middle" });
+    if (footer) txt(s, footer, { x: M, y: 6.98, w: 10, h: 0.3, fontSize: 10, color: color || C.muted, valign: "middle" });
+    txt(s, String(i), { x: W - M - 0.6, y: 6.98, w: 0.6, h: 0.3, fontSize: 10, color: color || C.muted, align: "right", valign: "middle" });
   };
   const head = (s, kicker, title) => {
-    if (kicker) txt(s, kicker, { x: M, y: 0.42, w: 11.5, h: 0.34, fontSize: 13, color: T.amzDeep, valign: "middle" });
-    txt(s, title, { x: M, y: 0.78, w: W - 2 * M, h: 0.8, fontSize: fit(title, W - 2 * M, 0.8, 30, 24, 1.1) || 24, bold: true, color: T.lapis, valign: "middle" });
+    if (G) box(s, M - 0.2, 0.28, W - 2 * M + 0.4, 1.42);
+    if (kicker) txt(s, kicker, { x: M, y: 0.42, w: 11.5, h: 0.34, fontSize: 13, color: C.kicker, valign: "middle" });
+    txt(s, title, { x: M, y: 0.78, w: W - 2 * M, h: 0.8, fontSize: fit(title, W - 2 * M, 0.8, 30, 24, 1.1) || 24, bold: true, color: C.title, valign: "middle" });
   };
-  const slide = (bg, anim) => { const s = pres.addSlide(); s.background = { color: bg }; ANIM.push(anim || null); return s; };
+  const slide = (bg, anim) => {
+    const s = pres.addSlide(); ANIM.push(anim || null);
+    if (!G) { s.background = { color: bg }; return s; }
+    s.background = { data: "image/jpeg;base64," + GBG.plain };
+    // 压暗底图：后处理时作为玻璃框的图片填充（按位置裁取），本身删除
+    s.addImage({ data: "image/jpeg;base64," + GBG.dark, x: 0, y: 0, w: 0.5, h: 0.28, objectName: "bgdark" });
+    return s;
+  };
   const brand = (s) => s.addShape(pres.shapes.RECTANGLE, { x: 9.6, y: 0, w: W - 9.6, h: 7.5, fill: { color: T.lapis }, line: { type: "none" }, objectName: "bar" });
 
   plan.slides.forEach((d, i) => {
     const no = i + 1; let s;
     if (d.type === "cover") {
-      s = slide(T.amz); brand(s);
-      s.addShape(pres.shapes.RECTANGLE, { x: 0.9, y: 2.42, w: 0.08, h: 1.6, fill: { color: T.van }, line: { type: "none" }, objectName: "deco" });
-      if (d.kicker) txt(s, ex(d.kicker), { x: 1.2, y: 1.55, w: 8.2, h: 0.5, fontSize: 18, color: T.lapis, valign: "middle" });
+      s = slide(T.amz);
+      if (G) box(s, 0.8, 1.2, 9.0, 4.1);
+      else { brand(s); s.addShape(pres.shapes.RECTANGLE, { x: 0.9, y: 2.42, w: 0.08, h: 1.6, fill: { color: T.van }, line: { type: "none" }, objectName: "deco" }); }
+      if (d.kicker) txt(s, ex(d.kicker), { x: 1.2, y: 1.55, w: 8.2, h: 0.5, fontSize: 18, color: G ? C.kicker : T.lapis, valign: "middle" });
       const t = ex(d.title);
-      txt(s, t, { x: 1.2, y: 2.2, w: 8.2, h: 2.0, fontSize: fit(t, 8.2, 2.0, 44, 28, 1.1) || 28, bold: true, color: T.lapis, valign: "middle", lineSpacingMultiple: 1.1 });
-      if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 8.2, h: 0.6, fontSize: 22, color: T.lapis });
+      txt(s, t, { x: 1.2, y: 2.2, w: 8.2, h: 2.0, fontSize: fit(t, 8.2, 2.0, 44, 28, 1.1) || 28, bold: true, color: C.title, valign: "middle", lineSpacingMultiple: 1.1 });
+      if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 8.2, h: 0.6, fontSize: 22, color: C.title });
       s.addNotes(body(d.notes));
     } else if (d.type === "toc") {
       s = slide(T.amzPale); head(s, "", "目录");
@@ -143,11 +159,12 @@ async function build(doc, plan) {
       d.items.forEach((it, k) => {
         const y = 1.85 + k * step, h = step - 0.16, t = ex(it);
         box(s, M, y, W - 2 * M, h); chip(s, M + 0.25, y + (h - 0.46) / 2, String(k + 1));
-        txt(s, t, { x: M + 1.0, y, w: W - 2 * M - 1.2, h, fontSize: fit(t, W - 2 * M - 1.2, h, 20, 14, 1.1) || 14, bold: true, color: T.lapis, valign: "middle" });
+        txt(s, t, { x: M + 1.0, y, w: W - 2 * M - 1.2, h, fontSize: fit(t, W - 2 * M - 1.2, h, 20, 14, 1.1) || 14, bold: true, color: C.title, valign: "middle" });
       });
       foot(s, no); s.addNotes(body(d.notes));
     } else if (d.type === "section") {
       s = slide(T.lapis);
+      if (G) box(s, 0.8, 1.7, 11.0, 3.7);
       if (d.no) txt(s, String(d.no), { x: 1.2, y: 2.0, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.amz, valign: "bottom" });
       const t = ex(d.title);
       txt(s, t, { x: 1.2, y: 3.2, w: 10.5, h: 1.1, fontSize: fit(t, 10.5, 1.1, 44, 28, 1.1) || 28, bold: true, color: T.white, valign: "middle" });
@@ -159,8 +176,8 @@ async function build(doc, plan) {
       d.points.forEach((p, j) => {
         const y = 1.95 + j * (h + 0.2), t = ex(p);
         box(s, M, y, W - 2 * M, h);
-        s.addShape(pres.shapes.RECTANGLE, { x: M + 0.3, y: y + 0.3, w: 0.08, h: h - 0.6, fill: { color: T.amzDeep }, line: { type: "none" }, objectName: "mark" });
-        txt(s, t, { x: M + 0.6, y, w: W - 2 * M - 0.9, h, fontSize: fit(t, W - 2 * M - 0.9, h - 0.2, 22, 16, 1.3) || 16, color: T.ink, valign: "middle", lineSpacingMultiple: 1.3 });
+        s.addShape(pres.shapes.RECTANGLE, { x: M + 0.3, y: y + 0.3, w: 0.08, h: h - 0.6, fill: { color: C.mark }, line: { type: "none" }, objectName: "mark" });
+        txt(s, t, { x: M + 0.6, y, w: W - 2 * M - 0.9, h, fontSize: fit(t, W - 2 * M - 0.9, h - 0.2, 22, 16, 1.3) || 16, color: C.ink, valign: "middle", lineSpacingMultiple: 1.3 });
       });
       foot(s, no); s.addNotes(body(d.notes));
     } else if (d.type === "cards") {
@@ -173,19 +190,23 @@ async function build(doc, plan) {
         box(s, x, y, w, h, { g });
         chip(s, x + CARD.pad, y + 0.3, c.no, { g });
         const ht = ex(c.head);
-        txt(s, ht, { g, x: x + CARD.pad, y: y + CARD.headTop, w: cw, h: CARD.headH, fontSize: fit(ht, cw, CARD.headH, k >= 4 ? 19 : 21, 16, 1.1) || 16, bold: true, color: T.lapis, valign: "top", lineSpacingMultiple: 1.1 });
-        if (c.body) { s.addShape(pres.shapes.LINE, { x: x + CARD.pad, y: y + CARD.ruleY, w: cw, h: 0, line: { color: T.line, width: 0.75 }, objectName: nm(g, "rule") }); const bt = ex(c.body); txt(s, bt, { g, x: x + CARD.pad, y: y + CARD.bodyTop, w: cw, h: h - CARD.bodyTop - 0.2, fontSize: fit(bt, cw, h - CARD.bodyTop - 0.2, k >= 4 ? 15 : 16, 13, 1.3) || 13, color: T.ink, lineSpacingMultiple: 1.3 }); }
-        if (d.arrows && j < k - 1) s.addShape(pres.shapes.RIGHT_ARROW, { x: x + w + gap * 0.18, y: y + h / 2 - 0.16, w: gap * 0.64, h: 0.32, fill: { color: T.amzDeep }, line: { color: T.amzDeep, width: 0 }, objectName: nm(`A${j + 1}|箭头`, "arrow") });
+        txt(s, ht, { g, x: x + CARD.pad, y: y + CARD.headTop, w: cw, h: CARD.headH, fontSize: fit(ht, cw, CARD.headH, k >= 4 ? 19 : 21, 16, 1.1) || 16, bold: true, color: C.title, valign: "top", lineSpacingMultiple: 1.1 });
+        if (c.body) { s.addShape(pres.shapes.LINE, { x: x + CARD.pad, y: y + CARD.ruleY, w: cw, h: 0, line: { color: C.rule, width: 0.75, transparency: G ? 60 : 0 }, objectName: nm(g, "rule") }); const bt = ex(c.body); txt(s, bt, { g, x: x + CARD.pad, y: y + CARD.bodyTop, w: cw, h: h - CARD.bodyTop - 0.2, fontSize: fit(bt, cw, h - CARD.bodyTop - 0.2, k >= 4 ? 15 : 16, 13, 1.3) || 13, color: C.ink, lineSpacingMultiple: 1.3 }); }
+        if (d.arrows && j < k - 1) s.addShape(pres.shapes.RIGHT_ARROW, { x: x + w + gap * 0.18, y: y + h / 2 - 0.16, w: gap * 0.64, h: 0.32, fill: { color: C.arrow }, line: { color: C.arrow, width: 0 }, objectName: nm(`A${j + 1}|箭头`, "arrow") });
       });
-      if (d.conclusion) txt(s, ex(d.conclusion), { g: "K|结论", x: M, y: 5.85, w: W - 2 * M, h: 0.6, fontSize: 20, bold: true, color: T.van, valign: "middle" });
+      if (d.conclusion) {
+        if (G) box(s, M, 5.78, W - 2 * M, 0.74, { g: "K|结论" });
+        txt(s, ex(d.conclusion), { g: "K|结论", x: M + (G ? 0.3 : 0), y: 5.85, w: W - 2 * M - (G ? 0.6 : 0), h: 0.6, fontSize: 20, bold: true, color: C.concl, valign: "middle" });
+      }
       foot(s, no);
       let t = d.intro && d.intro.length ? body(d.intro) + "\n" : "";
       d.cards.forEach((c, j) => { t += `【点击 ${j + 1}】${body(c.notes)}\n`; });
       t += `【点击 ${k + 1} · 全部恢复】${body(d.end)}`;
       s.addNotes(t.trim());
     } else if (d.type === "end") {
-      s = slide(T.amz); brand(s);
-      txt(s, "谢谢", { x: 1.2, y: 2.6, w: 8.2, h: 1.4, fontSize: 54, bold: true, color: T.lapis, valign: "middle" });
+      s = slide(T.amz);
+      if (G) box(s, 0.8, 2.2, 9.0, 2.2); else brand(s);
+      txt(s, "谢谢", { x: 1.2, y: 2.6, w: 8.2, h: 1.4, fontSize: 54, bold: true, color: C.title, valign: "middle" });
       s.addNotes(body(d.notes));
     }
   });

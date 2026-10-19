@@ -16,6 +16,7 @@
 
 ```json
 {
+  "style": "normal",
   "footer": ["P001", "页脚文字（通常是文档标题）"],
   "corrections": [
     { "para": "P006", "from": "在接再厉", "to": "再接再厉", "reason": "成语错字", "accepted": false }
@@ -24,7 +25,9 @@
 }
 ```
 
-`footer` 和 `corrections` 可以省略。
+`style`：`"normal"` 普通效果（默认），`"glass"` 毛玻璃效果。整份文件统一，不能按页单独设置。
+
+`style`、`footer` 和 `corrections` 都可以省略。
 
 ## 六种页面
 

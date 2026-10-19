@@ -67,19 +67,20 @@ function buildTiming(anim, ids) {
 const GLASS = '<a:ln w="15240"><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="25000"/></a:srgbClr></a:solidFill></a:ln><a:effectLst><a:innerShdw blurRad="317500"><a:schemeClr val="bg1"/></a:innerShdw></a:effectLst>';
 const TSH = '<a:effectLst><a:outerShdw blurRad="50800" dist="38100" dir="2700000" algn="tl" rotWithShape="0"><a:prstClr val="black"><a:alpha val="60000"/></a:prstClr></a:outerShdw></a:effectLst>';
 function glassify(x) {
-  // 1. 取出每块局部压暗图的图片关系 id，并删除这些临时图片
-  const rid = {};
+  // 毛玻璃：取出压暗底图 bgdark 的图片关系 id 并删除这张临时图片；玻璃框按自身位置裁取压暗底图作填充（srcRect）
+  let rid = null;
   x = x.replace(/<p:pic>(?:(?!<\/p:pic>)[\s\S])*?<\/p:pic>/g, (all) => {
-    const m = all.match(/name="patch#p(\d+)"/); if (!m) return all;
-    rid[m[1]] = all.match(/r:embed="([^"]+)"/)[1]; return "";
+    if (!/name="bgdark"/.test(all)) return all;
+    rid = all.match(/r:embed="([^"]+)"/)[1]; return "";
   });
-  // 2. 玻璃框：图片填充（局部压暗图）+ 白色内发光 + 细白边；白字加轻投影
+  const SW = 12192000, SH = 6858000;
   return x.replace(/<p:sp>((?:(?!<\/p:sp>)[\s\S])*?)<\/p:sp>/g, (all, body) => {
     if (!body.includes(`val="${MARK}"`)) return all;
-    const m = body.match(/glass#p(\d+)/);
-    const fill = m && rid[m[1]] ? `<a:blipFill><a:blip r:embed="${rid[m[1]]}"/><a:stretch><a:fillRect/></a:stretch></a:blipFill>` : "<a:noFill/>";
+    const o = body.match(/<a:off x="(-?\d+)" y="(-?\d+)"\/>/), e = body.match(/<a:ext cx="(\d+)" cy="(\d+)"\/>/);
+    const [x0, y0, cx, cy] = [+o[1], +o[2], +e[1], +e[2]], pc = (v) => Math.round(v * 100000);
+    const src = `<a:srcRect l="${pc(x0 / SW)}" t="${pc(y0 / SH)}" r="${pc((SW - x0 - cx) / SW)}" b="${pc((SH - y0 - cy) / SH)}"/>`;
+    const fill = rid ? `<a:blipFill><a:blip r:embed="${rid}"/>${src}<a:stretch><a:fillRect/></a:stretch></a:blipFill>` : "<a:noFill/>";
     body = body.replace(/(<p:spPr>[\s\S]*?<\/a:prstGeom>)[\s\S]*?(<\/p:spPr>)/, `$1${fill}${GLASS}$2`);
-    body = body.replace(/(<a:rPr\b[^>]*>(?:(?!<\/a:rPr>)[\s\S])*?<a:srgbClr val="FFFFFF"\/><\/a:solidFill>)/g, `$1${TSH}`);
     return `<p:sp>${body}</p:sp>`;
   });
 }
