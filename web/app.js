@@ -121,7 +121,7 @@
   // 一次完整的请求：提交（或接着取上次没取完的结果）
   async function askOnce(req) {
     if (!st.job) { const j = await submit(Object.assign(baseBody(), req)); st.job = { id: j.job_id, req }; save(); if (j.position > 0) msg(`排队中，前面还有 ${j.position} 份，请稍候…`); }
-    try { const j = await poll(st.job.id); st.job = null; save(); if (!j.plan || !Array.isArray(j.plan.slides)) throw fail("", "plan_parse_failed", true); return j; }
+    try { const j = await poll(st.job.id); st.job = null; save(); const pl = j.plan || {}; if (!Array.isArray(pl.slides) && !(req.errors && Array.isArray(pl.fix))) throw fail("", "plan_parse_failed", true); return j; }
     catch (e) { if (e.code !== "network") { st.job = null; save(); } throw e; }  // 只是网络断了：任务还在，下次接着取
   }
   // 可重试的错误（没写完、解析失败、网络、服务器重启）自动再试一次；失败的请求不计入每日次数
@@ -174,6 +174,60 @@
     return n;
   }
 
+  // ---------- 备注漏段、重复：程序自己补齐（备注放的是整段原文，补进去不改任何字） ----------
+  function noteLists(plan) {
+    const L = [];
+    const arr = (o, k) => { if (!Array.isArray(o[k])) o[k] = []; L.push(o[k]); };
+    (plan.slides || []).forEach((s) => {
+      if (!s || typeof s !== "object") return;
+      if (s.type === "cards") { arr(s, "intro"); (s.cards || []).forEach((c) => c && typeof c === "object" && arr(c, "notes")); arr(s, "end"); }
+      else arr(s, "notes");
+    });
+    return L;
+  }
+  function fixNotes(doc, plan) {
+    const ids = doc.paras.map((p) => p.id), pos = Object.fromEntries(ids.map((id, i) => [id, i]));
+    const L = noteLists(plan); if (!L.length) return 0;
+    const seen = new Set(); let n = 0;
+    L.forEach((l) => { const keep = []; l.forEach((id) => { if (pos[id] !== undefined && !seen.has(id)) { seen.add(id); keep.push(id); } else n++; }); l.splice(0, l.length, ...keep); });
+    ids.forEach((id, i) => {
+      if (seen.has(id)) return;
+      let target = L[0], at = 0;
+      for (let j = i - 1; j >= 0; j--) if (seen.has(ids[j])) { target = L.find((l) => l.includes(ids[j])); at = target.indexOf(ids[j]) + 1; break; }
+      target.splice(at, 0, id); seen.add(id); n++;
+    });
+    return n;
+  }
+  // ---------- 页面放不下的摘句：在逗号、句号处截短（仍是连续的原文） ----------
+  function shrink(doc, plan) {
+    const errs = () => D.check(doc, plan).errs;
+    if (!errs().some((e) => /太长|超过/.test(e))) return 0;
+    const refs = [];
+    (plan.slides || []).forEach((s) => {
+      if (!s) return;
+      [s.title, s.conclusion].concat(s.items || [], s.points || []).forEach((r) => Array.isArray(r) && refs.push(r));
+      (s.cards || []).forEach((c) => c && [c.head, c.body].forEach((r) => Array.isArray(r) && refs.push(r)));
+    });
+    let n = 0;
+    for (const ref of refs) {
+      const base = errs().length; if (!base) break;
+      const orig = ref[1]; if (typeof orig !== "string") continue;
+      const cuts = [...orig.matchAll(/[，。；：、,;:]/g)].map((m) => m.index).filter((i) => i >= 6).reverse();
+      for (const i of cuts) { ref[1] = orig.slice(0, i); if (errs().length < base) { n++; break; } ref[1] = orig; }
+    }
+    return n;
+  }
+  // 大模型修正时只回改动的页：{"fix":[{"page":3,"slide":{…}}]}；也接受完整方案
+  function merge(plan, p) {
+    if (p && Array.isArray(p.slides)) return p;
+    const out = JSON.parse(JSON.stringify(plan));
+    ((p && p.fix) || []).forEach((f) => { if (f && f.slide && f.page >= 1 && f.page <= out.slides.length) out.slides[f.page - 1] = f.slide; });
+    if (p && p.footer) out.footer = p.footer;
+    if (p && Array.isArray(p.corrections)) out.corrections = p.corrections;
+    return out;
+  }
+  const localFix = (doc, plan) => { snap(doc, plan); fixNotes(doc, plan); shrink(doc, plan); };
+
   // ---------- 主流程（可以从任何一步接着做） ----------
   $("go").onclick = async () => {
     if (!file) return;
@@ -197,20 +251,19 @@
         st.plan = j.plan; st.plan.style = st.style; st.sid = j.session_id; st.round = 0; save();
       }
       step(2);
-      if (st.job) {  // 刷新前正在等大模型修正：接着取结果
-        const j = await askModel(st.job.req);
-        st.plan = j.plan; st.plan.style = st.style; save();
-      }
+      const repair = async (req) => {  // 修正成功才算用掉一次
+        const j = await askModel(req);
+        st.plan = merge(st.plan, j.plan); st.plan.style = st.style; st.round += 1; save();
+      };
+      if (st.job) await repair(st.job.req);  // 刷新前正在等大模型修正：接着取结果
       for (;;) {
         (st.plan.corrections || []).forEach((c) => { c.accepted = false; });  // 错别字一律先设为未确认
-        snap(st.doc, st.plan);
+        localFix(st.doc, st.plan);
         const r = D.check(st.doc, st.plan);
         if (r.ok) break;
         if (st.round >= 2) throw fail("大模型的分页方案两次修正后仍有问题，请再试一次；多次失败可以换一份文档", "check_failed", true);
-        st.round += 1; save();
-        msg(`校验发现 ${r.errs.length} 处问题，正在让大模型修正（第 ${st.round} 次）…`);
-        const j = await askModel({ session_id: st.sid, previous_plan: st.plan, errors: r.errs });
-        st.plan = j.plan; st.plan.style = st.style; save();
+        msg(`校验发现 ${r.errs.length} 处问题，正在让大模型修正（第 ${st.round + 1} 次，通常不到 1 分钟）…`);
+        await repair({ session_id: st.sid, previous_plan: st.plan, errors: r.errs });
       }
       msg("校验通过。");
       if ((st.plan.corrections || []).length) { st.stage = "corr"; save(); busy = false; ready(); return askCorrections(); }

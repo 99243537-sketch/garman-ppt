@@ -111,7 +111,7 @@ def extract_json(text, truncated=False):
     for cand in (raw, re.sub(r",\s*([}\]])", r"\1", raw)):  # 第二次去掉多余的结尾逗号再试
         try:
             plan = json.loads(cand)
-            if isinstance(plan, dict) and isinstance(plan.get("slides"), list):
+            if isinstance(plan, dict) and (isinstance(plan.get("slides"), list) or isinstance(plan.get("fix"), list)):
                 return plan
         except json.JSONDecodeError:
             pass
@@ -143,7 +143,11 @@ def make_messages(req):
     msgs = [{"role": "system", "content": PROMPT}, {"role": "user", "content": user}]
     if req.get("errors") and req.get("previous_plan"):
         msgs.append({"role": "assistant", "content": json.dumps(req["previous_plan"], ensure_ascii=False, separators=(",", ":"))})
-        msgs.append({"role": "user", "content": "程序校验没有通过，问题如下。请只修改有问题的地方，其余保持不变，然后输出完整的 JSON：\n- " + "\n- ".join(str(x) for x in req["errors"][:30])})
+        msgs.append({"role": "user", "content": ("程序校验没有通过，问题如下：\n- " + "\n- ".join(str(x) for x in req["errors"][:30]) +
+            "\n\n请只修改有问题的页，不要重写整份方案。只输出一个紧凑的 JSON：\n"
+            '{"fix":[{"page":页码,"slide":{这一页修改后的完整内容}}]}\n'
+            "页码从 1 开始，与上面的「第 N 页」一致；没问题的页不要输出。页脚有问题时加上 \"footer\"。"
+            "只有必须增加或删除页面时，才输出完整方案（含 slides）。")})
     return msgs
 
 
