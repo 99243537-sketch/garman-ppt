@@ -94,3 +94,11 @@
 - 赵盾决定取消网页版讲稿制作项目，只保留技能（GarmanPPT）。Eddy 已于 10-20 撤下：ppt-planner 服务已停用（inactive + disabled），原网页备份在 /ppt-offline-20261020/，Nginx 的 /ppt-api/ 段已注释。
 - https://www.zhaodun.work/ppt/ 现在是 Eddy 做的 Skill 介绍页（中英双语，另有 /ppt/en/、/letter.html、main.html 入口）。技能发新版时只更新这些页面的文字和下载链接，不要部署 web/ 和 server/。
 - 仓库里的 web/、server/ 和 docs/部署说明-给Eddy.md 只作存档，不再维护。
+
+## 2026-10-20 0.3.0：Garman 自然色 13 套
+- 赵盾决定不另做 Pro 版，直接在 GarmanPPT 里加配色，版本升到 0.3.0。毛玻璃仍为实验效果，只配天河石。
+- plan.json 顶层新增 `"theme"`（13 个中文名之一，默认天河石）。不写 theme 时页面 XML 与 0.2.2 逐字节一致（主题色板只改了名字）。
+- 配色由 `tools/palette/derive.py` 生成 `tools/doc2ppt/src/themes.js`；规则见 docs/Garman色彩规范-v3.md。角色名改为 main/soft/pale/deep/base/accent/ink/muted/line。
+- 打包：npm 现在可用；esbuild + pptxgenjs@4.0.1 + jszip@3.10.1 装在任意目录，软链到 /opt/npm-tools 后带 `--preserve-symlinks` 打包，产物里的路径注释才和以前一致。
+- 待做：新配色在 PowerPoint、WPS 上放映复核；网站 /ppt/ 介绍页更新文字和下载链接（garman-ppt-0.3.0.zip）。
+- 以后可议：多主色（乌桕、鸳鸯、鲍鱼壳）、红色系深色封面。

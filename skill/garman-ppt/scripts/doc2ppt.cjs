@@ -28,9 +28,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// ../../../../../../opt/npm-tools/node_modules/process-nextick-args/index.js
+// ../../../../../opt/npm-tools/node_modules/process-nextick-args/index.js
 var require_process_nextick_args = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/process-nextick-args/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/process-nextick-args/index.js"(exports2, module2) {
     "use strict";
     if (typeof process === "undefined" || !process.version || process.version.indexOf("v0.") === 0 || process.version.indexOf("v1.") === 0 && process.version.indexOf("v1.8.") !== 0) {
       module2.exports = { nextTick };
@@ -73,9 +73,9 @@ var require_process_nextick_args = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/isarray/index.js
+// ../../../../../opt/npm-tools/node_modules/isarray/index.js
 var require_isarray = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/isarray/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/isarray/index.js"(exports2, module2) {
     var toString = {}.toString;
     module2.exports = Array.isArray || function(arr) {
       return toString.call(arr) == "[object Array]";
@@ -83,16 +83,16 @@ var require_isarray = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/stream.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/stream.js
 var require_stream = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/stream.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/stream.js"(exports2, module2) {
     module2.exports = require("stream");
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/safe-buffer/index.js
+// ../../../../../opt/npm-tools/node_modules/safe-buffer/index.js
 var require_safe_buffer = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/safe-buffer/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/safe-buffer/index.js"(exports2, module2) {
     var buffer = require("buffer");
     var Buffer2 = buffer.Buffer;
     function copyProps(src, dst) {
@@ -147,9 +147,9 @@ var require_safe_buffer = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/core-util-is/lib/util.js
+// ../../../../../opt/npm-tools/node_modules/core-util-is/lib/util.js
 var require_util = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/core-util-is/lib/util.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/core-util-is/lib/util.js"(exports2) {
     function isArray(arg) {
       if (Array.isArray) {
         return Array.isArray(arg);
@@ -217,9 +217,9 @@ var require_util = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/inherits/inherits_browser.js
+// ../../../../../opt/npm-tools/node_modules/inherits/inherits_browser.js
 var require_inherits_browser = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/inherits/inherits_browser.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/inherits/inherits_browser.js"(exports2, module2) {
     if (typeof Object.create === "function") {
       module2.exports = function inherits(ctor, superCtor) {
         if (superCtor) {
@@ -249,9 +249,9 @@ var require_inherits_browser = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/inherits/inherits.js
+// ../../../../../opt/npm-tools/node_modules/inherits/inherits.js
 var require_inherits = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/inherits/inherits.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/inherits/inherits.js"(exports2, module2) {
     try {
       util = require("util");
       if (typeof util.inherits !== "function") throw "";
@@ -263,9 +263,9 @@ var require_inherits = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/BufferList.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/BufferList.js
 var require_BufferList = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/BufferList.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/BufferList.js"(exports2, module2) {
     "use strict";
     function _classCallCheck(instance, Constructor) {
       if (!(instance instanceof Constructor)) {
@@ -341,9 +341,9 @@ var require_BufferList = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/destroy.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/destroy.js
 var require_destroy = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/destroy.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/internal/streams/destroy.js"(exports2, module2) {
     "use strict";
     var pna = require_process_nextick_args();
     function destroy(err, cb) {
@@ -410,16 +410,16 @@ var require_destroy = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/util-deprecate/node.js
+// ../../../../../opt/npm-tools/node_modules/util-deprecate/node.js
 var require_node = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/util-deprecate/node.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/util-deprecate/node.js"(exports2, module2) {
     module2.exports = require("util").deprecate;
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_writable.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_writable.js
 var require_stream_writable = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_writable.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_writable.js"(exports2, module2) {
     "use strict";
     var pna = require_process_nextick_args();
     module2.exports = Writable;
@@ -857,9 +857,9 @@ var require_stream_writable = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_duplex.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_duplex.js
 var require_stream_duplex = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_duplex.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_duplex.js"(exports2, module2) {
     "use strict";
     var pna = require_process_nextick_args();
     var objectKeys = Object.keys || function(obj) {
@@ -934,9 +934,9 @@ var require_stream_duplex = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/string_decoder/lib/string_decoder.js
+// ../../../../../opt/npm-tools/node_modules/string_decoder/lib/string_decoder.js
 var require_string_decoder = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/string_decoder/lib/string_decoder.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/string_decoder/lib/string_decoder.js"(exports2) {
     "use strict";
     var Buffer2 = require_safe_buffer().Buffer;
     var isEncoding = Buffer2.isEncoding || function(encoding) {
@@ -1172,9 +1172,9 @@ var require_string_decoder = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_readable.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_readable.js
 var require_stream_readable = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_readable.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_readable.js"(exports2, module2) {
     "use strict";
     var pna = require_process_nextick_args();
     module2.exports = Readable;
@@ -1858,9 +1858,9 @@ var require_stream_readable = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_transform.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_transform.js
 var require_stream_transform = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_transform.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_transform.js"(exports2, module2) {
     "use strict";
     module2.exports = Transform;
     var Duplex = require_stream_duplex();
@@ -1958,9 +1958,9 @@ var require_stream_transform = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_passthrough.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_passthrough.js
 var require_stream_passthrough = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_passthrough.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/lib/_stream_passthrough.js"(exports2, module2) {
     "use strict";
     module2.exports = PassThrough;
     var Transform = require_stream_transform();
@@ -1977,9 +1977,9 @@ var require_stream_passthrough = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/readable-stream/readable.js
+// ../../../../../opt/npm-tools/node_modules/readable-stream/readable.js
 var require_readable = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/readable-stream/readable.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/readable-stream/readable.js"(exports2, module2) {
     var Stream = require("stream");
     if (process.env.READABLE_STREAM === "disable" && Stream) {
       module2.exports = Stream;
@@ -2002,9 +2002,9 @@ var require_readable = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/support.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/support.js
 var require_support = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/support.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/support.js"(exports2) {
     "use strict";
     exports2.base64 = true;
     exports2.array = true;
@@ -2042,9 +2042,9 @@ var require_support = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/base64.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/base64.js
 var require_base64 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/base64.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/base64.js"(exports2) {
     "use strict";
     var utils = require_utils();
     var support = require_support();
@@ -2119,9 +2119,9 @@ var require_base64 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/nodejsUtils.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/nodejsUtils.js
 var require_nodejsUtils = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/nodejsUtils.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/nodejsUtils.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       /**
@@ -2175,9 +2175,9 @@ var require_nodejsUtils = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/immediate/lib/index.js
+// ../../../../../opt/npm-tools/node_modules/immediate/lib/index.js
 var require_lib = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/immediate/lib/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/immediate/lib/index.js"(exports2, module2) {
     "use strict";
     var Mutation = global.MutationObserver || global.WebKitMutationObserver;
     var scheduleDrain;
@@ -2249,9 +2249,9 @@ var require_lib = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/lie/lib/index.js
+// ../../../../../opt/npm-tools/node_modules/lie/lib/index.js
 var require_lib2 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/lie/lib/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/lie/lib/index.js"(exports2, module2) {
     "use strict";
     var immediate = require_lib();
     function INTERNAL() {
@@ -2519,9 +2519,9 @@ var require_lib2 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/external.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/external.js
 var require_external = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/external.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/external.js"(exports2, module2) {
     "use strict";
     var ES6Promise = null;
     if (typeof Promise !== "undefined") {
@@ -2535,9 +2535,9 @@ var require_external = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/setimmediate/setImmediate.js
+// ../../../../../opt/npm-tools/node_modules/setimmediate/setImmediate.js
 var require_setImmediate = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/setimmediate/setImmediate.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/setimmediate/setImmediate.js"(exports2) {
     (function(global2, undefined2) {
       "use strict";
       if (global2.setImmediate) {
@@ -2683,9 +2683,9 @@ var require_setImmediate = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/utils.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/utils.js
 var require_utils = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/utils.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/utils.js"(exports2) {
     "use strict";
     var support = require_support();
     var base64 = require_base64();
@@ -3008,9 +3008,9 @@ var require_utils = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/GenericWorker.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/stream/GenericWorker.js
 var require_GenericWorker = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/GenericWorker.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/stream/GenericWorker.js"(exports2, module2) {
     "use strict";
     function GenericWorker(name) {
       this.name = name || "default";
@@ -3235,9 +3235,9 @@ var require_GenericWorker = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/utf8.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/utf8.js
 var require_utf8 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/utf8.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/utf8.js"(exports2) {
     "use strict";
     var utils = require_utils();
     var support = require_support();
@@ -3425,9 +3425,9 @@ var require_utf8 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/ConvertWorker.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/stream/ConvertWorker.js
 var require_ConvertWorker = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/ConvertWorker.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/stream/ConvertWorker.js"(exports2, module2) {
     "use strict";
     var GenericWorker = require_GenericWorker();
     var utils = require_utils();
@@ -3446,9 +3446,9 @@ var require_ConvertWorker = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamOutputAdapter.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamOutputAdapter.js
 var require_NodejsStreamOutputAdapter = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamOutputAdapter.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamOutputAdapter.js"(exports2, module2) {
     "use strict";
     var Readable = require_readable().Readable;
     var utils = require_utils();
@@ -3477,9 +3477,9 @@ var require_NodejsStreamOutputAdapter = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/StreamHelper.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/stream/StreamHelper.js
 var require_StreamHelper = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/StreamHelper.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/stream/StreamHelper.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var ConvertWorker = require_ConvertWorker();
@@ -3637,9 +3637,9 @@ var require_StreamHelper = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/defaults.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/defaults.js
 var require_defaults = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/defaults.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/defaults.js"(exports2) {
     "use strict";
     exports2.base64 = false;
     exports2.binary = false;
@@ -3654,9 +3654,9 @@ var require_defaults = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataWorker.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataWorker.js
 var require_DataWorker = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataWorker.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataWorker.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var GenericWorker = require_GenericWorker();
@@ -3742,9 +3742,9 @@ var require_DataWorker = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/crc32.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/crc32.js
 var require_crc32 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/crc32.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/crc32.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     function makeTable() {
@@ -3789,9 +3789,9 @@ var require_crc32 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/Crc32Probe.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/stream/Crc32Probe.js
 var require_Crc32Probe = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/Crc32Probe.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/stream/Crc32Probe.js"(exports2, module2) {
     "use strict";
     var GenericWorker = require_GenericWorker();
     var crc32 = require_crc32();
@@ -3809,9 +3809,9 @@ var require_Crc32Probe = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataLengthProbe.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataLengthProbe.js
 var require_DataLengthProbe = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataLengthProbe.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/stream/DataLengthProbe.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var GenericWorker = require_GenericWorker();
@@ -3832,9 +3832,9 @@ var require_DataLengthProbe = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/compressedObject.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/compressedObject.js
 var require_compressedObject = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/compressedObject.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/compressedObject.js"(exports2, module2) {
     "use strict";
     var external = require_external();
     var DataWorker = require_DataWorker();
@@ -3877,9 +3877,9 @@ var require_compressedObject = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/zipObject.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/zipObject.js
 var require_zipObject = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/zipObject.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/zipObject.js"(exports2, module2) {
     "use strict";
     var StreamHelper = require_StreamHelper();
     var DataWorker = require_DataWorker();
@@ -3994,9 +3994,9 @@ var require_zipObject = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/utils/common.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/utils/common.js
 var require_common = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/utils/common.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/utils/common.js"(exports2) {
     "use strict";
     var TYPED_OK = typeof Uint8Array !== "undefined" && typeof Uint16Array !== "undefined" && typeof Int32Array !== "undefined";
     function _has(obj, key) {
@@ -4085,9 +4085,9 @@ var require_common = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/trees.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/trees.js
 var require_trees = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/trees.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/trees.js"(exports2) {
     "use strict";
     var utils = require_common();
     var Z_FIXED = 4;
@@ -4727,9 +4727,9 @@ var require_trees = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/adler32.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/adler32.js
 var require_adler32 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/adler32.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/adler32.js"(exports2, module2) {
     "use strict";
     function adler32(adler, buf, len, pos) {
       var s1 = adler & 65535 | 0, s2 = adler >>> 16 & 65535 | 0, n = 0;
@@ -4749,9 +4749,9 @@ var require_adler32 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/crc32.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/crc32.js
 var require_crc322 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/crc32.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/crc32.js"(exports2, module2) {
     "use strict";
     function makeTable() {
       var c, table = [];
@@ -4777,9 +4777,9 @@ var require_crc322 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/messages.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/messages.js
 var require_messages = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/messages.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/messages.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       2: "need dictionary",
@@ -4804,9 +4804,9 @@ var require_messages = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/deflate.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/deflate.js
 var require_deflate = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/deflate.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/deflate.js"(exports2) {
     "use strict";
     var utils = require_common();
     var trees = require_trees();
@@ -5853,9 +5853,9 @@ var require_deflate = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/utils/strings.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/utils/strings.js
 var require_strings = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/utils/strings.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/utils/strings.js"(exports2) {
     "use strict";
     var utils = require_common();
     var STR_APPLY_OK = true;
@@ -5995,9 +5995,9 @@ var require_strings = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/zstream.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/zstream.js
 var require_zstream = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/zstream.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/zstream.js"(exports2, module2) {
     "use strict";
     function ZStream() {
       this.input = null;
@@ -6017,9 +6017,9 @@ var require_zstream = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/deflate.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/deflate.js
 var require_deflate2 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/deflate.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/deflate.js"(exports2) {
     "use strict";
     var zlib_deflate = require_deflate();
     var utils = require_common();
@@ -6178,9 +6178,9 @@ var require_deflate2 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inffast.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inffast.js
 var require_inffast = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inffast.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inffast.js"(exports2, module2) {
     "use strict";
     var BAD = 30;
     var TYPE = 12;
@@ -6407,9 +6407,9 @@ var require_inffast = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inftrees.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inftrees.js
 var require_inftrees = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inftrees.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inftrees.js"(exports2, module2) {
     "use strict";
     var utils = require_common();
     var MAXBITS = 15;
@@ -6723,9 +6723,9 @@ var require_inftrees = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inflate.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inflate.js
 var require_inflate = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inflate.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/inflate.js"(exports2) {
     "use strict";
     var utils = require_common();
     var adler32 = require_adler32();
@@ -7962,9 +7962,9 @@ var require_inflate = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/constants.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/constants.js
 var require_constants = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/constants.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/constants.js"(exports2, module2) {
     "use strict";
     module2.exports = {
       /* Allowed flush values; see deflate() and inflate() below for details */
@@ -8009,9 +8009,9 @@ var require_constants = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/gzheader.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/zlib/gzheader.js
 var require_gzheader = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/zlib/gzheader.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/zlib/gzheader.js"(exports2, module2) {
     "use strict";
     function GZheader() {
       this.text = 0;
@@ -8029,9 +8029,9 @@ var require_gzheader = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/lib/inflate.js
+// ../../../../../opt/npm-tools/node_modules/pako/lib/inflate.js
 var require_inflate2 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/lib/inflate.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/pako/lib/inflate.js"(exports2) {
     "use strict";
     var zlib_inflate = require_inflate();
     var utils = require_common();
@@ -8203,9 +8203,9 @@ var require_inflate2 = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pako/index.js
+// ../../../../../opt/npm-tools/node_modules/pako/index.js
 var require_pako = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pako/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pako/index.js"(exports2, module2) {
     "use strict";
     var assign = require_common().assign;
     var deflate = require_deflate2();
@@ -8217,9 +8217,9 @@ var require_pako = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/flate.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/flate.js
 var require_flate = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/flate.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/flate.js"(exports2) {
     "use strict";
     var USE_TYPEDARRAY = typeof Uint8Array !== "undefined" && typeof Uint16Array !== "undefined" && typeof Uint32Array !== "undefined";
     var pako = require_pako();
@@ -8276,9 +8276,9 @@ var require_flate = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/compressions.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/compressions.js
 var require_compressions = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/compressions.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/compressions.js"(exports2) {
     "use strict";
     var GenericWorker = require_GenericWorker();
     exports2.STORE = {
@@ -8294,9 +8294,9 @@ var require_compressions = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/signature.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/signature.js
 var require_signature = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/signature.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/signature.js"(exports2) {
     "use strict";
     exports2.LOCAL_FILE_HEADER = "PK";
     exports2.CENTRAL_FILE_HEADER = "PK";
@@ -8307,9 +8307,9 @@ var require_signature = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/generate/ZipFileWorker.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/generate/ZipFileWorker.js
 var require_ZipFileWorker = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/generate/ZipFileWorker.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/generate/ZipFileWorker.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var GenericWorker = require_GenericWorker();
@@ -8591,9 +8591,9 @@ var require_ZipFileWorker = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/generate/index.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/generate/index.js
 var require_generate = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/generate/index.js"(exports2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/generate/index.js"(exports2) {
     "use strict";
     var compressions = require_compressions();
     var ZipFileWorker = require_ZipFileWorker();
@@ -8632,9 +8632,9 @@ var require_generate = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamInputAdapter.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamInputAdapter.js
 var require_NodejsStreamInputAdapter = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamInputAdapter.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/nodejs/NodejsStreamInputAdapter.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var GenericWorker = require_GenericWorker();
@@ -8691,9 +8691,9 @@ var require_NodejsStreamInputAdapter = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/object.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/object.js
 var require_object = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/object.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/object.js"(exports2, module2) {
     "use strict";
     var utf8 = require_utf8();
     var utils = require_utils();
@@ -8964,9 +8964,9 @@ var require_object = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/DataReader.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/reader/DataReader.js
 var require_DataReader = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/DataReader.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/reader/DataReader.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     function DataReader(data) {
@@ -9086,9 +9086,9 @@ var require_DataReader = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/ArrayReader.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/reader/ArrayReader.js
 var require_ArrayReader = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/ArrayReader.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/reader/ArrayReader.js"(exports2, module2) {
     "use strict";
     var DataReader = require_DataReader();
     var utils = require_utils();
@@ -9128,9 +9128,9 @@ var require_ArrayReader = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/StringReader.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/reader/StringReader.js
 var require_StringReader = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/StringReader.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/reader/StringReader.js"(exports2, module2) {
     "use strict";
     var DataReader = require_DataReader();
     var utils = require_utils();
@@ -9158,9 +9158,9 @@ var require_StringReader = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/Uint8ArrayReader.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/reader/Uint8ArrayReader.js
 var require_Uint8ArrayReader = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/Uint8ArrayReader.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/reader/Uint8ArrayReader.js"(exports2, module2) {
     "use strict";
     var ArrayReader = require_ArrayReader();
     var utils = require_utils();
@@ -9181,9 +9181,9 @@ var require_Uint8ArrayReader = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/NodeBufferReader.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/reader/NodeBufferReader.js
 var require_NodeBufferReader = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/NodeBufferReader.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/reader/NodeBufferReader.js"(exports2, module2) {
     "use strict";
     var Uint8ArrayReader = require_Uint8ArrayReader();
     var utils = require_utils();
@@ -9201,9 +9201,9 @@ var require_NodeBufferReader = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/readerFor.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/reader/readerFor.js
 var require_readerFor = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/reader/readerFor.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/reader/readerFor.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var support = require_support();
@@ -9228,9 +9228,9 @@ var require_readerFor = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntry.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntry.js
 var require_zipEntry = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntry.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntry.js"(exports2, module2) {
     "use strict";
     var readerFor = require_readerFor();
     var utils = require_utils();
@@ -9446,9 +9446,9 @@ var require_zipEntry = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntries.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntries.js
 var require_zipEntries = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntries.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/zipEntries.js"(exports2, module2) {
     "use strict";
     var readerFor = require_readerFor();
     var utils = require_utils();
@@ -9644,9 +9644,9 @@ var require_zipEntries = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/load.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/load.js
 var require_load = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/load.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/load.js"(exports2, module2) {
     "use strict";
     var utils = require_utils();
     var external = require_external();
@@ -9723,9 +9723,9 @@ var require_load = __commonJS({
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/jszip/lib/index.js
+// ../../../../../opt/npm-tools/node_modules/jszip/lib/index.js
 var require_lib3 = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/jszip/lib/index.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/jszip/lib/index.js"(exports2, module2) {
     "use strict";
     function JSZip() {
       if (!(this instanceof JSZip)) {
@@ -9763,7 +9763,6 @@ var require_lib3 = __commonJS({
 // src/parse.js
 var require_parse = __commonJS({
   "src/parse.js"(exports2, module2) {
-    var path2 = require("path");
     var JSZip = require_lib3();
     var unxml = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
     async function readDocx(data) {
@@ -9847,15 +9846,15 @@ var require_parse = __commonJS({
       return { source: name.split(/[\\/]/).pop(), paras, fixes, notes };
     }
     async function parse2(file) {
-      return parseData(path2.basename(file), require("fs").readFileSync(file));
+      return parseData(file.split(/[\\/]/).pop(), require("fs").readFileSync(file));
     }
     module2.exports = { parse: parse2, parseData };
   }
 });
 
-// ../../../../../../opt/npm-tools/node_modules/pptxgenjs/dist/pptxgen.cjs.js
+// ../../../../../opt/npm-tools/node_modules/pptxgenjs/dist/pptxgen.cjs.js
 var require_pptxgen_cjs = __commonJS({
-  "../../../../../../opt/npm-tools/node_modules/pptxgenjs/dist/pptxgen.cjs.js"(exports2, module2) {
+  "../../../../../opt/npm-tools/node_modules/pptxgenjs/dist/pptxgen.cjs.js"(exports2, module2) {
     "use strict";
     var JSZip = require_lib3();
     function __awaiter(thisArg, _arguments, P, generator) {
@@ -15179,6 +15178,211 @@ ${String(ex)}`);
   }
 });
 
+// src/themes.js
+var require_themes = __commonJS({
+  "src/themes.js"(exports2, module2) {
+    var THEMES = {
+      "\u5929\u6CB3\u77F3": {
+        "kind": "\u77FF\u7269",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u9752\u84DD\u914D\u9492\u94C5\u77FF\u6A59\u7EA2\uFF0C\u51B7\u9759\u7406\u6027\uFF1B\u9ED8\u8BA4\uFF0C\u9002\u5408\u5DE5\u4F5C\u6C47\u62A5\u3001\u516C\u6587",
+        "main": "70C6D6",
+        "soft": "DDF1F2",
+        "pale": "EFF8F9",
+        "deep": "1B667A",
+        "base": "122947",
+        "accent": "B04D2F",
+        "white": "FFFFFF",
+        "ink": "243335",
+        "muted": "53686A",
+        "line": "C8D5D4"
+      },
+      "\u9E66\u9E49\u87BA": {
+        "kind": "\u8D1D\u58F3",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u8C61\u7259\u7C73\u767D\u914D\u8D6D\u7EA2\uFF0C\u4E2D\u6027\u6E29\u548C\uFF1B\u9002\u5408\u4EBA\u6587\u3001\u5386\u53F2\u3001\u4EFB\u4F55\u4E0D\u60F3\u62A2\u773C\u7684\u573A\u5408",
+        "main": "CABCA1",
+        "soft": "F2EADC",
+        "pale": "F8F5EE",
+        "deep": "725A21",
+        "base": "27292D",
+        "accent": "AD4E37",
+        "white": "FFFFFF",
+        "ink": "353025",
+        "muted": "6A6253",
+        "line": "D5D0C7"
+      },
+      "\u9C8D\u9C7C\u58F3": {
+        "kind": "\u8D1D\u58F3",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u73E0\u5149\u84DD\u7EFF\u914D\u8679\u5F69\u7D2B\uFF0C\u6E05\u65B0\uFF1B\u9002\u5408\u79D1\u6280\u3001\u6D77\u6D0B\u3001\u73AF\u4FDD",
+        "main": "71C9C8",
+        "soft": "DCF0EF",
+        "pale": "EEF7F7",
+        "deep": "086B6C",
+        "base": "362517",
+        "accent": "8754AB",
+        "white": "FFFFFF",
+        "ink": "243433",
+        "muted": "536868",
+        "line": "C7D4D4"
+      },
+      "\u7FE0\u9E1F": {
+        "kind": "\u9E1F\u7C7B",
+        "tier": "\u9C9C\u660E",
+        "desc": "\u660E\u4EAE\u5929\u84DD\u914D\u6817\u6A59\uFF0C\u54CD\u4EAE\u6709\u6D3B\u529B\uFF1B\u9002\u5408\u6559\u5B66\u3001\u6D3B\u52A8\u3001\u5C11\u513F",
+        "main": "55BCFA",
+        "soft": "DFEEF8",
+        "pale": "EFF6FB",
+        "deep": "2C6485",
+        "base": "0E294A",
+        "accent": "AC5107",
+        "white": "FFFFFF",
+        "ink": "273239",
+        "muted": "566670",
+        "line": "C9D3D9"
+      },
+      "\u7EA2\u5634\u84DD\u9E4A": {
+        "kind": "\u9E1F\u7C7B",
+        "tier": "\u9C9C\u660E",
+        "desc": "\u5B9D\u84DD\u914D\u7EA2\u5634\uFF0C\u9192\u76EE\uFF1B\u9002\u5408\u5BA3\u4F20\u3001\u6D3B\u52A8",
+        "main": "93AEF8",
+        "soft": "E5EBFA",
+        "pale": "F2F5FC",
+        "deep": "4A5C8B",
+        "base": "1C2746",
+        "accent": "B1483E",
+        "white": "FFFFFF",
+        "ink": "2C303B",
+        "muted": "5D6372",
+        "line": "CDD1DA"
+      },
+      "\u9E22\u5C3E": {
+        "kind": "\u82B1\u5349",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u6DE1\u7D2B\u914D\u59DC\u9EC4\uFF0C\u67D4\u548C\u4F18\u96C5\uFF1B\u9002\u5408\u6587\u827A\u3001\u827A\u672F\u3001\u8BFB\u4E66",
+        "main": "C5A9E6",
+        "soft": "EEE8F7",
+        "pale": "F7F3FB",
+        "deep": "685282",
+        "base": "2C2145",
+        "accent": "8C6802",
+        "white": "FFFFFF",
+        "ink": "332E39",
+        "muted": "66606F",
+        "line": "D3CFD9"
+      },
+      "\u6885\u82B1": {
+        "kind": "\u82B1\u5349",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u6885\u7C89\u914D\u82D4\u9752\u3001\u58A8\u679D\u6DF1\u5E95\uFF0C\u6E29\u5A49\uFF1B\u9002\u5408\u8282\u5E86\u3001\u51AC\u5B63\u3001\u4F20\u7EDF\u6587\u5316",
+        "main": "E6A0BA",
+        "soft": "F8E6EC",
+        "pale": "FBF2F5",
+        "deep": "814A60",
+        "base": "2F262A",
+        "accent": "067D51",
+        "white": "FFFFFF",
+        "ink": "392C31",
+        "muted": "705E64",
+        "line": "D9CDD1"
+      },
+      "\u683E\u6811": {
+        "kind": "\u679C\u5B9E",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u73CA\u745A\u7C89\u914D\u53F6\u7EFF\u3001\u6797\u836B\u58A8\u7EFF\uFF0C\u6E29\u6696\u6709\u751F\u6C14\uFF1B\u9002\u5408\u793E\u533A\u3001\u6C11\u751F\u3001\u79CB\u5B63",
+        "main": "F09F90",
+        "soft": "F9E6E3",
+        "pale": "FCF3F1",
+        "deep": "854C41",
+        "base": "0E3111",
+        "accent": "3E7D2F",
+        "white": "FFFFFF",
+        "ink": "3A2D2A",
+        "muted": "715E5B",
+        "line": "DACECB"
+      },
+      "\u69ED\u67AB": {
+        "kind": "\u6811\u53F6",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u67AB\u7EA2\u6A59\u914D\u677E\u7EFF\uFF0C\u70ED\u70C8\u800C\u6C89\u7A33\uFF1B\u9002\u5408\u5E74\u7EC8\u603B\u7ED3\u3001\u79CB\u5B63",
+        "main": "F49E84",
+        "soft": "F9E7E1",
+        "pale": "FCF3F0",
+        "deep": "844D3C",
+        "base": "421C19",
+        "accent": "047B60",
+        "white": "FFFFFF",
+        "ink": "3A2D29",
+        "muted": "715F59",
+        "line": "DACECA"
+      },
+      "\u4E4C\u6855": {
+        "kind": "\u6811\u53F6",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u674F\u6A59\u914D\u79CB\u7A7A\u84DD\u3001\u679D\u5E72\u6DF1\u5E95\uFF0C\u660E\u6717\uFF1B\u9002\u5408\u4E61\u6751\u3001\u6587\u65C5\u3001\u79CB\u5B63",
+        "main": "E9A679",
+        "soft": "F7E8DE",
+        "pale": "FBF3EF",
+        "deep": "80512F",
+        "base": "2E2821",
+        "accent": "1672AB",
+        "white": "FFFFFF",
+        "ink": "392E27",
+        "muted": "6F6056",
+        "line": "D9CFC8"
+      },
+      "\u9EC4\u91D1\u5B9D\u87BA": {
+        "kind": "\u8D1D\u58F3",
+        "tier": "\u9C9C\u660E",
+        "desc": "\u8D64\u6A59\u914D\u7D2B\u6655\uFF0C\u9971\u6EE1\u559C\u5E86\uFF1B\u9002\u5408\u5E86\u5178\u3001\u6D3B\u52A8",
+        "main": "FE8F5B",
+        "soft": "F8E7E0",
+        "pale": "FBF3F0",
+        "deep": "834E36",
+        "base": "2D2826",
+        "accent": "9250A0",
+        "white": "FFFFFF",
+        "ink": "392D28",
+        "muted": "705F58",
+        "line": "D9CECA"
+      },
+      "\u94F6\u674F": {
+        "kind": "\u6811\u53F6",
+        "tier": "\u9C9C\u660E",
+        "desc": "\u91D1\u9EC4\u914D\u79CB\u7A7A\u84DD\uFF0C\u660E\u4EAE\u6E29\u6696\uFF1B\u9002\u5408\u6821\u56ED\u3001\u79CB\u5B63",
+        "main": "F0CF4C",
+        "soft": "EFEBDC",
+        "pale": "F7F5EE",
+        "deep": "6C5D22",
+        "base": "2F281E",
+        "accent": "3B6CBF",
+        "white": "FFFFFF",
+        "ink": "333025",
+        "muted": "686353",
+        "line": "D4D1C7"
+      },
+      "\u5409\u4E01\u866B": {
+        "kind": "\u6606\u866B",
+        "tier": "\u96C5\u81F4",
+        "desc": "\u8C46\u7EFF\u914D\u7D2B\u7EA2\uFF0C\u81EA\u7136\u6E05\u65B0\uFF1B\u9002\u5408\u519C\u4E1A\u3001\u5065\u5EB7\u3001\u73AF\u4FDD",
+        "main": "A4C386",
+        "soft": "E6EEE0",
+        "pale": "F3F7F0",
+        "deep": "4E6734",
+        "base": "003221",
+        "accent": "A8477A",
+        "white": "FFFFFF",
+        "ink": "2D3228",
+        "muted": "5E6657",
+        "line": "CED3C9"
+      }
+    };
+    var DEFAULT_THEME = "\u5929\u6CB3\u77F3";
+    module2.exports = { THEMES, DEFAULT_THEME };
+  }
+});
+
 // src/post.js
 var require_post = __commonJS({
   "src/post.js"(exports2, module2) {
@@ -15186,7 +15390,13 @@ var require_post = __commonJS({
     var esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     var FONT = "Microsoft YaHei";
     var MARK = "0A0B0C";
-    var THEME = { dk1: "243335", lt1: "FFFFFF", dk2: "122947", lt2: "EFF8F9", accent1: "70C6D6", accent2: "1B667A", accent3: "245F4D", accent4: "59652E", accent5: "B04D2F", accent6: "315F91", hlink: "315F91", folHlink: "1B667A" };
+    var { THEMES, DEFAULT_THEME } = require_themes();
+    var V23 = { dk1: "243335", lt1: "FFFFFF", dk2: "122947", lt2: "EFF8F9", accent1: "70C6D6", accent2: "1B667A", accent3: "245F4D", accent4: "59652E", accent5: "B04D2F", accent6: "315F91", hlink: "315F91", folHlink: "1B667A" };
+    var schemeOf = (name) => {
+      if (name === DEFAULT_THEME) return V23;
+      const t = THEMES[name];
+      return { dk1: t.ink, lt1: "FFFFFF", dk2: t.base, lt2: t.pale, accent1: t.main, accent2: t.deep, accent3: t.base, accent4: t.muted, accent5: t.accent, accent6: t.soft, hlink: t.deep, folHlink: t.muted };
+    };
     var SLOTS = ["dk1", "lt1", "dk2", "lt2", "accent1", "accent2", "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink"];
     function groupUnits(xml) {
       const re = /<p:(sp|pic)\b[^>]*>[\s\S]*?<\/p:\1>/g;
@@ -15292,10 +15502,11 @@ var require_post = __commonJS({
         return `<p:sp>${body}</p:sp>`;
       });
     }
-    async function postProcess(buf, ANIM, outType = "nodebuffer") {
+    async function postProcess(buf, ANIM, outType = "nodebuffer", theme = DEFAULT_THEME) {
       const zip = await JSZip.loadAsync(buf);
       let th = await zip.file("ppt/theme/theme1.xml").async("string");
-      const scheme = `<a:clrScheme name="\u8D75\u76FE\u77FF\u7269\u8272\u5F69 v2.3">` + SLOTS.map((k) => `<a:${k}><a:srgbClr val="${THEME[k]}"/></a:${k}>`).join("") + "</a:clrScheme>";
+      const C = schemeOf(theme);
+      const scheme = `<a:clrScheme name="Garman \u81EA\u7136\u8272 \xB7 ${theme}">` + SLOTS.map((k) => `<a:${k}><a:srgbClr val="${C[k]}"/></a:${k}>`).join("") + "</a:clrScheme>";
       th = th.replace(/<a:clrScheme\b[\s\S]*?<\/a:clrScheme>/, () => scheme).replace(/<a:ea typeface=""\/>/g, `<a:ea typeface="${FONT}"/>`).replace(/<a:font script="Hans" typeface="[^"]*"\/>/g, '<a:font script="Hans" typeface="\u5FAE\u8F6F\u96C5\u9ED1"/>');
       zip.file("ppt/theme/theme1.xml", th);
       for (let i = 0; i < ANIM.length; i++) {
@@ -15330,8 +15541,8 @@ var require_core = __commonJS({
     var pptxgen = require_pptxgen_cjs();
     var { postProcess } = require_post();
     var GBG = require_glassbg();
+    var { THEMES, DEFAULT_THEME } = require_themes();
     var MARK = "0A0B0C";
-    var T = { amz: "70C6D6", amzSoft: "DDF1F2", amzPale: "EFF8F9", amzDeep: "1B667A", lapis: "122947", van: "B04D2F", white: "FFFFFF", ink: "243335", muted: "53686A", line: "C8D5D4" };
     var W = 13.333;
     var M = 0.6;
     var FONT = "Microsoft YaHei";
@@ -15371,6 +15582,8 @@ var require_core = __commonJS({
       if (!plan || !Array.isArray(plan.slides) || !plan.slides.length) return { ok: false, errs: ["\u65B9\u6848\u91CC\u6CA1\u6709 slides"], warns };
       if (plan.footer) ex(plan.footer, "\u9875\u811A footer");
       if (plan.style && !["normal", "glass"].includes(plan.style)) errs.push(`style \u53EA\u80FD\u662F "normal"\uFF08\u666E\u901A\uFF09\u6216 "glass"\uFF08\u6BDB\u73BB\u7483\uFF09`);
+      if (plan.theme !== void 0 && !THEMES[plan.theme]) errs.push(`theme \u914D\u8272\u300C${plan.theme}\u300D\u4E0D\u5B58\u5728\uFF0C\u53EA\u80FD\u7528\uFF1A${Object.keys(THEMES).join("\u3001")}`);
+      else if (plan.style === "glass" && plan.theme && plan.theme !== DEFAULT_THEME) errs.push(`\u6BDB\u73BB\u7483\u662F\u5B9E\u9A8C\u6548\u679C\uFF0C\u53EA\u914D\u5929\u6CB3\u77F3\uFF1B\u9009\u4E86\u300C${plan.theme}\u300D\u5C31\u8BF7\u7528\u666E\u901A\u6548\u679C\uFF08\u5220\u6389 style \u6216\u5199 "normal"\uFF09`);
       plan.slides.forEach((s, i) => {
         if (!TYPES.includes(s.type)) {
           errs.push(`${at(i)}\uFF1A\u9875\u9762\u7C7B\u578B ${s.type} \u4E0D\u5B58\u5728\uFF0C\u53EA\u80FD\u7528 ${TYPES.join("\u3001")}`);
@@ -15468,7 +15681,8 @@ var require_core = __commonJS({
       pres.company = "";
       pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
       const G = plan.style === "glass";
-      const C = G ? { title: T.white, kicker: T.amz, ink: T.white, muted: T.amzSoft, rule: T.white, concl: T.amz, mark: T.amz, arrow: T.amz } : { title: T.lapis, kicker: T.amzDeep, ink: T.ink, muted: T.muted, rule: T.line, concl: T.van, mark: T.amzDeep, arrow: T.amzDeep };
+      const T = THEMES[plan.theme || DEFAULT_THEME];
+      const C = G ? { title: T.white, kicker: T.main, ink: T.white, muted: T.soft, rule: T.white, concl: T.main, mark: T.main, arrow: T.main } : { title: T.base, kicker: T.deep, ink: T.ink, muted: T.muted, rule: T.line, concl: T.accent, mark: T.deep, arrow: T.deep };
       const ANIM = [];
       let n = 0;
       const nm = (g, p) => g ? `@${g}|${++n}` : `${p}-${++n}`;
@@ -15479,8 +15693,8 @@ var require_core = __commonJS({
       const box = (s, x, y, w, h, o = {}) => G ? s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.12, fill: { color: MARK }, line: { type: "none" }, objectName: nm(o.g, "glass") }) : s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.08, fill: { color: o.fill || T.white }, line: { color: T.line, width: 0.75 }, objectName: nm(o.g, "card") });
       const chip = (s, x, y, label, o = {}) => {
         const w = em(String(label)) > 1 ? 0.24 + 0.26 * em(String(label)) : 0.46;
-        s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.46, rectRadius: 0.06, fill: { color: T.amz }, line: { color: T.amz, width: 0 }, objectName: nm(o.g, "chip") });
-        txt(s, String(label), { g: o.g, x, y, w, h: 0.46, fontSize: 14, bold: true, color: T.lapis, align: "center", valign: "middle" });
+        s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.46, rectRadius: 0.06, fill: { color: T.main }, line: { color: T.main, width: 0 }, objectName: nm(o.g, "chip") });
+        txt(s, String(label), { g: o.g, x, y, w, h: 0.46, fontSize: 14, bold: true, color: T.base, align: "center", valign: "middle" });
       };
       const foot = (s, i, color) => {
         if (footer) txt(s, footer, { x: M, y: 6.98, w: 10, h: 0.3, fontSize: 10, color: color || C.muted, valign: "middle" });
@@ -15502,24 +15716,24 @@ var require_core = __commonJS({
         s.addImage({ data: "image/jpeg;base64," + GBG.dark, x: 0, y: 0, w: 0.5, h: 0.28, objectName: "bgdark" });
         return s;
       };
-      const brand = (s) => s.addShape(pres.shapes.RECTANGLE, { x: 9.6, y: 0, w: W - 9.6, h: 7.5, fill: { color: T.lapis }, line: { type: "none" }, objectName: "bar" });
+      const brand = (s) => s.addShape(pres.shapes.RECTANGLE, { x: 9.6, y: 0, w: W - 9.6, h: 7.5, fill: { color: T.base }, line: { type: "none" }, objectName: "bar" });
       plan.slides.forEach((d, i) => {
         const no = i + 1;
         let s;
         if (d.type === "cover") {
-          s = slide(T.amz);
+          s = slide(T.main);
           if (G) box(s, 0.8, 1.2, 9, 4.1);
           else {
             brand(s);
-            s.addShape(pres.shapes.RECTANGLE, { x: 0.9, y: 2.42, w: 0.08, h: 1.6, fill: { color: T.van }, line: { type: "none" }, objectName: "deco" });
+            s.addShape(pres.shapes.RECTANGLE, { x: 0.9, y: 2.42, w: 0.08, h: 1.6, fill: { color: T.accent }, line: { type: "none" }, objectName: "deco" });
           }
-          if (d.kicker) txt(s, ex(d.kicker), { x: 1.2, y: 1.55, w: 8.2, h: 0.5, fontSize: 18, color: G ? C.kicker : T.lapis, valign: "middle" });
+          if (d.kicker) txt(s, ex(d.kicker), { x: 1.2, y: 1.55, w: 8.2, h: 0.5, fontSize: 18, color: G ? C.kicker : T.base, valign: "middle" });
           const t = ex(d.title);
           txt(s, t, { x: 1.2, y: 2.2, w: 8.2, h: 2, fontSize: fit(t, 8.2, 2, 44, 28, 1.1) || 28, bold: true, color: C.title, valign: "middle", lineSpacingMultiple: 1.1 });
           if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 8.2, h: 0.6, fontSize: 22, color: C.title });
           s.addNotes(body(d.notes));
         } else if (d.type === "toc") {
-          s = slide(T.amzPale);
+          s = slide(T.pale);
           head(s, "", "\u76EE\u5F55");
           const step = Math.min(0.92, 4.9 / d.items.length);
           d.items.forEach((it, k) => {
@@ -15531,16 +15745,16 @@ var require_core = __commonJS({
           foot(s, no);
           s.addNotes(body(d.notes));
         } else if (d.type === "section") {
-          s = slide(T.lapis);
+          s = slide(T.base);
           if (G) box(s, 0.8, 1.7, 11, 3.7);
-          if (d.no) txt(s, String(d.no), { x: 1.2, y: 2, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.amz, valign: "bottom" });
+          if (d.no) txt(s, String(d.no), { x: 1.2, y: 2, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.main, valign: "bottom" });
           const t = ex(d.title);
           txt(s, t, { x: 1.2, y: 3.2, w: 10.5, h: 1.1, fontSize: fit(t, 10.5, 1.1, 44, 28, 1.1) || 28, bold: true, color: T.white, valign: "middle" });
-          if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 10.5, h: 0.6, fontSize: 22, color: T.amzSoft });
-          foot(s, no, T.amzSoft);
+          if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 10.5, h: 0.6, fontSize: 22, color: T.soft });
+          foot(s, no, T.soft);
           s.addNotes(body(d.notes));
         } else if (d.type === "text") {
-          s = slide(T.amzPale);
+          s = slide(T.pale);
           head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
           const k = d.points.length, h = Math.min(1.5, 4.4 / k);
           d.points.forEach((p, j) => {
@@ -15554,7 +15768,7 @@ var require_core = __commonJS({
         } else if (d.type === "cards") {
           const k = d.cards.length, boxes = cardBoxes(k, !!d.conclusion, !!d.arrows);
           const steps = d.cards.map((_, j) => d.arrows && j > 0 ? [`A${j}`, `C${j + 1}`] : [`C${j + 1}`]);
-          s = slide(T.amzPale, { kind: "fade", steps, end: d.conclusion ? "K" : null });
+          s = slide(T.pale, { kind: "fade", steps, end: d.conclusion ? "K" : null });
           head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
           d.cards.forEach((c, j) => {
             const { x, y, w, h, gap } = boxes[j], g = `C${j + 1}|${ex(c.head)}`, cw = w - 2 * CARD.pad;
@@ -15582,7 +15796,7 @@ var require_core = __commonJS({
           t += `\u3010\u70B9\u51FB ${k + 1} \xB7 \u5168\u90E8\u6062\u590D\u3011${body(d.end)}`;
           s.addNotes(t.trim());
         } else if (d.type === "end") {
-          s = slide(T.amz);
+          s = slide(T.main);
           if (G) box(s, 0.8, 2.2, 9, 2.2);
           else brand(s);
           txt(s, "\u8C22\u8C22", { x: 1.2, y: 2.6, w: 8.2, h: 1.4, fontSize: 54, bold: true, color: C.title, valign: "middle" });
@@ -15590,7 +15804,7 @@ var require_core = __commonJS({
         }
       });
       const raw = await pres.write({ outputType: opts.browser ? "arraybuffer" : "nodebuffer" });
-      return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer");
+      return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer", plan.theme || DEFAULT_THEME);
     }
     module2.exports = { check: check2, build: build2, applyCorrections, TYPES };
   }
@@ -15600,6 +15814,7 @@ var require_core = __commonJS({
 var require_report = __commonJS({
   "src/report.js"(exports2, module2) {
     var { applyCorrections } = require_core();
+    var { DEFAULT_THEME } = require_themes();
     function makeReport2(doc, plan, fileName, warns, version) {
       const { applied } = applyCorrections(doc, plan);
       const pending = (plan.corrections || []).filter((c) => !c.accepted);
@@ -15609,7 +15824,7 @@ var require_report = __commonJS({
         `- \u6587\u4EF6\uFF1A${fileName}\uFF0C\u5171 ${plan.slides.length} \u9875\u3002\u751F\u6210\u5DE5\u5177 doc2ppt ${version}\u3002`,
         `- \u539F\u6587 ${doc.paras.length} \u6BB5\u5168\u90E8\u653E\u8FDB\u8BB2\u7A3F\u5907\u6CE8\uFF1B\u9875\u9762\u4E0A\u7684\u6BCF\u53E5\u8BDD\u90FD\u80FD\u5728\u539F\u6587\u4E2D\u9010\u5B57\u627E\u5230\u3002`,
         "- \u5361\u7247\u9875\u5E26\u8BB2\u8BFE\u52A8\u753B\uFF1A\u9010\u5F20\u51FA\u73B0\u3001\u4E0A\u4E00\u5F20\u53D8\u6DE1\uFF0C\u6700\u540E\u4E00\u6B21\u70B9\u51FB\u5168\u90E8\u6062\u590D\uFF08\u6709\u7ED3\u8BBA\u53E5\u65F6\u540C\u65F6\u51FA\u73B0\uFF09\u3002",
-        `- \u6548\u679C\uFF1A${plan.style === "glass" ? "\u6BDB\u73BB\u7483" : "\u666E\u901A"}\uFF1B\u914D\u8272\uFF1A\u8D75\u76FE\u77FF\u7269\u8272\u5F69\u7CFB\u7EDF v2.3\uFF1B\u5B57\u4F53\uFF1A\u5FAE\u8F6F\u96C5\u9ED1\u3002`,
+        `- \u6548\u679C\uFF1A${plan.style === "glass" ? "\u6BDB\u73BB\u7483" : "\u666E\u901A"}\uFF1B\u914D\u8272\uFF1AGarman \u81EA\u7136\u8272 \xB7 ${plan.theme || DEFAULT_THEME}\uFF1B\u5B57\u4F53\uFF1A\u5FAE\u8F6F\u96C5\u9ED1\u3002`,
         "",
         "## \u6392\u7248\u4FEE\u6B63\uFF08\u672A\u6539\u4EFB\u4F55\u5B57\uFF09",
         "",
@@ -15636,7 +15851,7 @@ var require_report = __commonJS({
 // src/version.js
 var require_version = __commonJS({
   "src/version.js"(exports2, module2) {
-    module2.exports = { VERSION: "0.2.2" };
+    module2.exports = { VERSION: "0.3.0" };
   }
 });
 

@@ -16,6 +16,7 @@
 
 ```json
 {
+  "theme": "天河石",
   "style": "normal",
   "footer": ["P001", "页脚文字（通常是文档标题）"],
   "corrections": [
@@ -27,7 +28,9 @@
 
 `style`：`"normal"` 普通效果（默认），`"glass"` 毛玻璃效果。整份文件统一，不能按页单独设置。
 
-`style`、`footer` 和 `corrections` 都可以省略。
+`theme`：配色名称，只能用 SKILL.md「配色」一节表里的 13 个名称之一，默认 `"天河石"`。整份文件统一。毛玻璃效果只配天河石。
+
+`theme`、`style`、`footer` 和 `corrections` 都可以省略。
 
 ## 六种页面
 
