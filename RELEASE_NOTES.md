@@ -16,6 +16,6 @@ GarmanPPT（garman-ppt）0.3.0
 用法：把压缩包和文档一起发给 WorkBuddy、OpenClaw、ChatGPT 等能运行代码的智能体，说：
 「请解压技能包，按 garman-ppt/SKILL.md 的步骤，把这份文档做成 PPT，用银杏配色。」（不说配色就用天河石；需要毛玻璃效果就加上「毛玻璃效果」）
 
-配色图鉴：https://www.zhaodun.work/color/
+配色图鉴：https://www.zhaodun.work/color/#garman
 
 已验证：13 套配色的普通、毛玻璃效果逐套生成通过；不选配色时（普通、毛玻璃）页面与 0.2.2 逐字节一致。新配色尚待在 PowerPoint、WPS 上放映复核。
