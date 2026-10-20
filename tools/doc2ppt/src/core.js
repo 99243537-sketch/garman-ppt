@@ -1,10 +1,10 @@
-// 分页方案校验 + 排版生成（普通效果，赵盾矿物色彩 v2.3，微软雅黑）
+// 分页方案校验 + 排版生成（Garman 自然色 13 套，普通 / 毛玻璃效果，微软雅黑）
 const pptxgen = require("pptxgenjs");
 const { postProcess } = require("./post.js");
 const GBG = require("./glassbg.js");
+const { THEMES, DEFAULT_THEME } = require("./themes.js");
 const MARK = "0A0B0C";
 
-const T = { amz: "70C6D6", amzSoft: "DDF1F2", amzPale: "EFF8F9", amzDeep: "1B667A", lapis: "122947", van: "B04D2F", white: "FFFFFF", ink: "243335", muted: "53686A", line: "C8D5D4" };
 const W = 13.333, M = 0.6, FONT = "Microsoft YaHei";
 const TYPES = ["cover", "toc", "section", "cards", "text", "end"];
 
@@ -40,6 +40,7 @@ function check(doc, plan) {
   if (!plan || !Array.isArray(plan.slides) || !plan.slides.length) return { ok: false, errs: ["方案里没有 slides"], warns };
   if (plan.footer) ex(plan.footer, "页脚 footer");
   if (plan.style && !["normal", "glass"].includes(plan.style)) errs.push(`style 只能是 "normal"（普通）或 "glass"（毛玻璃）`);
+  if (plan.theme !== undefined && !THEMES[plan.theme]) errs.push(`theme 配色「${plan.theme}」不存在，只能用：${Object.keys(THEMES).join("、")}`);
   plan.slides.forEach((s, i) => {
     if (!TYPES.includes(s.type)) { errs.push(`${at(i)}：页面类型 ${s.type} 不存在，只能用 ${TYPES.join("、")}`); return; }
     const w = at(i, s.type);
@@ -111,8 +112,9 @@ async function build(doc, plan, opts = {}) {
   pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
   // 效果：普通（默认）或毛玻璃（"style": "glass"）
   const G = plan.style === "glass";
-  const C = G ? { title: T.white, kicker: T.amz, ink: T.white, muted: T.amzSoft, rule: T.white, concl: T.amz, mark: T.amz, arrow: T.amz }
-              : { title: T.lapis, kicker: T.amzDeep, ink: T.ink, muted: T.muted, rule: T.line, concl: T.van, mark: T.amzDeep, arrow: T.amzDeep };
+  const T = THEMES[plan.theme || DEFAULT_THEME];
+  const C = G ? { title: T.white, kicker: T.main, ink: T.white, muted: T.soft, rule: T.white, concl: T.main, mark: T.main, arrow: T.main }
+              : { title: T.base, kicker: T.deep, ink: T.ink, muted: T.muted, rule: T.line, concl: T.accent, mark: T.deep, arrow: T.deep };
   const ANIM = [];
   let n = 0;
   const nm = (g, p) => (g ? `@${g}|${++n}` : `${p}-${++n}`);
@@ -120,8 +122,8 @@ async function build(doc, plan, opts = {}) {
   const box = (s, x, y, w, h, o = {}) => G ? s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.12, fill: { color: MARK }, line: { type: "none" }, objectName: nm(o.g, "glass") }) : s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h, rectRadius: 0.08, fill: { color: o.fill || T.white }, line: { color: T.line, width: 0.75 }, objectName: nm(o.g, "card") });
   const chip = (s, x, y, label, o = {}) => {
     const w = em(String(label)) > 1 ? 0.24 + 0.26 * em(String(label)) : 0.46;
-    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.46, rectRadius: 0.06, fill: { color: T.amz }, line: { color: T.amz, width: 0 }, objectName: nm(o.g, "chip") });
-    txt(s, String(label), { g: o.g, x, y, w, h: 0.46, fontSize: 14, bold: true, color: T.lapis, align: "center", valign: "middle" });
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.46, rectRadius: 0.06, fill: { color: T.main }, line: { color: T.main, width: 0 }, objectName: nm(o.g, "chip") });
+    txt(s, String(label), { g: o.g, x, y, w, h: 0.46, fontSize: 14, bold: true, color: T.base, align: "center", valign: "middle" });
   };
   const foot = (s, i, color) => {
     if (footer) txt(s, footer, { x: M, y: 6.98, w: 10, h: 0.3, fontSize: 10, color: color || C.muted, valign: "middle" });
@@ -135,26 +137,26 @@ async function build(doc, plan, opts = {}) {
   const slide = (bg, anim) => {
     const s = pres.addSlide(); ANIM.push(anim || null);
     if (!G) { s.background = { color: bg }; return s; }
-    s.background = { data: "image/jpeg;base64," + GBG.plain };
+    s.background = { data: "image/jpeg;base64," + GBG[plan.theme || DEFAULT_THEME].plain };
     // 压暗底图：后处理时作为玻璃框的图片填充（按位置裁取），本身删除
-    s.addImage({ data: "image/jpeg;base64," + GBG.dark, x: 0, y: 0, w: 0.5, h: 0.28, objectName: "bgdark" });
+    s.addImage({ data: "image/jpeg;base64," + GBG[plan.theme || DEFAULT_THEME].dark, x: 0, y: 0, w: 0.5, h: 0.28, objectName: "bgdark" });
     return s;
   };
-  const brand = (s) => s.addShape(pres.shapes.RECTANGLE, { x: 9.6, y: 0, w: W - 9.6, h: 7.5, fill: { color: T.lapis }, line: { type: "none" }, objectName: "bar" });
+  const brand = (s) => s.addShape(pres.shapes.RECTANGLE, { x: 9.6, y: 0, w: W - 9.6, h: 7.5, fill: { color: T.base }, line: { type: "none" }, objectName: "bar" });
 
   plan.slides.forEach((d, i) => {
     const no = i + 1; let s;
     if (d.type === "cover") {
-      s = slide(T.amz);
+      s = slide(T.main);
       if (G) box(s, 0.8, 1.2, 9.0, 4.1);
-      else { brand(s); s.addShape(pres.shapes.RECTANGLE, { x: 0.9, y: 2.42, w: 0.08, h: 1.6, fill: { color: T.van }, line: { type: "none" }, objectName: "deco" }); }
-      if (d.kicker) txt(s, ex(d.kicker), { x: 1.2, y: 1.55, w: 8.2, h: 0.5, fontSize: 18, color: G ? C.kicker : T.lapis, valign: "middle" });
+      else { brand(s); s.addShape(pres.shapes.RECTANGLE, { x: 0.9, y: 2.42, w: 0.08, h: 1.6, fill: { color: T.accent }, line: { type: "none" }, objectName: "deco" }); }
+      if (d.kicker) txt(s, ex(d.kicker), { x: 1.2, y: 1.55, w: 8.2, h: 0.5, fontSize: 18, color: G ? C.kicker : T.base, valign: "middle" });
       const t = ex(d.title);
       txt(s, t, { x: 1.2, y: 2.2, w: 8.2, h: 2.0, fontSize: fit(t, 8.2, 2.0, 44, 28, 1.1) || 28, bold: true, color: C.title, valign: "middle", lineSpacingMultiple: 1.1 });
       if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 8.2, h: 0.6, fontSize: 22, color: C.title });
       s.addNotes(body(d.notes));
     } else if (d.type === "toc") {
-      s = slide(T.amzPale); head(s, "", "目录");
+      s = slide(T.pale); head(s, "", "目录");
       const step = Math.min(0.92, 4.9 / d.items.length);
       d.items.forEach((it, k) => {
         const y = 1.85 + k * step, h = step - 0.16, t = ex(it);
@@ -163,15 +165,15 @@ async function build(doc, plan, opts = {}) {
       });
       foot(s, no); s.addNotes(body(d.notes));
     } else if (d.type === "section") {
-      s = slide(T.lapis);
+      s = slide(T.base);
       if (G) box(s, 0.8, 1.7, 11.0, 3.7);
-      if (d.no) txt(s, String(d.no), { x: 1.2, y: 2.0, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.amz, valign: "bottom" });
+      if (d.no) txt(s, String(d.no), { x: 1.2, y: 2.0, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.main, valign: "bottom" });
       const t = ex(d.title);
       txt(s, t, { x: 1.2, y: 3.2, w: 10.5, h: 1.1, fontSize: fit(t, 10.5, 1.1, 44, 28, 1.1) || 28, bold: true, color: T.white, valign: "middle" });
-      if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 10.5, h: 0.6, fontSize: 22, color: T.amzSoft });
-      foot(s, no, T.amzSoft); s.addNotes(body(d.notes));
+      if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 10.5, h: 0.6, fontSize: 22, color: T.soft });
+      foot(s, no, T.soft); s.addNotes(body(d.notes));
     } else if (d.type === "text") {
-      s = slide(T.amzPale); head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
+      s = slide(T.pale); head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
       const k = d.points.length, h = Math.min(1.5, 4.4 / k);
       d.points.forEach((p, j) => {
         const y = 1.95 + j * (h + 0.2), t = ex(p);
@@ -183,7 +185,7 @@ async function build(doc, plan, opts = {}) {
     } else if (d.type === "cards") {
       const k = d.cards.length, boxes = cardBoxes(k, !!d.conclusion, !!d.arrows);
       const steps = d.cards.map((_, j) => (d.arrows && j > 0 ? [`A${j}`, `C${j + 1}`] : [`C${j + 1}`]));
-      s = slide(T.amzPale, { kind: "fade", steps, end: d.conclusion ? "K" : null });
+      s = slide(T.pale, { kind: "fade", steps, end: d.conclusion ? "K" : null });
       head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
       d.cards.forEach((c, j) => {
         const { x, y, w, h, gap } = boxes[j], g = `C${j + 1}|${ex(c.head)}`, cw = w - 2 * CARD.pad;
@@ -204,7 +206,7 @@ async function build(doc, plan, opts = {}) {
       t += `【点击 ${k + 1} · 全部恢复】${body(d.end)}`;
       s.addNotes(t.trim());
     } else if (d.type === "end") {
-      s = slide(T.amz);
+      s = slide(T.main);
       if (G) box(s, 0.8, 2.2, 9.0, 2.2); else brand(s);
       txt(s, "谢谢", { x: 1.2, y: 2.6, w: 8.2, h: 1.4, fontSize: 54, bold: true, color: C.title, valign: "middle" });
       s.addNotes(body(d.notes));
@@ -212,7 +214,7 @@ async function build(doc, plan, opts = {}) {
   });
   // Node 用 nodebuffer；浏览器用 arraybuffer → 输出 Blob
   const raw = await pres.write({ outputType: opts.browser ? "arraybuffer" : "nodebuffer" });
-  return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer");
+  return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer", plan.theme || DEFAULT_THEME);
 }
 
 module.exports = { check, build, applyCorrections, TYPES };

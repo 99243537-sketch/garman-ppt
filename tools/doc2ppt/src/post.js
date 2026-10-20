@@ -1,7 +1,14 @@
 const JSZip = require("jszip");
 const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const FONT = "Microsoft YaHei", MARK = "0A0B0C";
-const THEME = { dk1: "243335", lt1: "FFFFFF", dk2: "122947", lt2: "EFF8F9", accent1: "70C6D6", accent2: "1B667A", accent3: "245F4D", accent4: "59652E", accent5: "B04D2F", accent6: "315F91", hlink: "315F91", folHlink: "1B667A" };
+const { THEMES, DEFAULT_THEME } = require("./themes.js");
+// PowerPoint / WPS 主题色板：天河石沿用 v2.3 原色板，其余按角色映射
+const V23 = { dk1: "243335", lt1: "FFFFFF", dk2: "122947", lt2: "EFF8F9", accent1: "70C6D6", accent2: "1B667A", accent3: "245F4D", accent4: "59652E", accent5: "B04D2F", accent6: "315F91", hlink: "315F91", folHlink: "1B667A" };
+const schemeOf = (name) => {
+  if (name === DEFAULT_THEME) return V23;
+  const t = THEMES[name];
+  return { dk1: t.ink, lt1: "FFFFFF", dk2: t.base, lt2: t.pale, accent1: t.main, accent2: t.deep, accent3: t.base, accent4: t.muted, accent5: t.accent, accent6: t.soft, hlink: t.deep, folHlink: t.muted };
+};
 // ---------- 后处理：主题色与中文字体、组合、动画、毛玻璃 ----------
 const SLOTS = ["dk1", "lt1", "dk2", "lt2", "accent1", "accent2", "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink"];
 
@@ -85,10 +92,11 @@ function glassify(x) {
   });
 }
 
-async function postProcess(buf, ANIM, outType = "nodebuffer") {
+async function postProcess(buf, ANIM, outType = "nodebuffer", theme = DEFAULT_THEME) {
   const zip = await JSZip.loadAsync(buf);
   let th = await zip.file("ppt/theme/theme1.xml").async("string");
-  const scheme = `<a:clrScheme name="赵盾矿物色彩 v2.3">` + SLOTS.map((k) => `<a:${k}><a:srgbClr val="${THEME[k]}"/></a:${k}>`).join("") + "</a:clrScheme>";
+  const C = schemeOf(theme);
+  const scheme = `<a:clrScheme name="Garman 自然色 · ${theme}">` + SLOTS.map((k) => `<a:${k}><a:srgbClr val="${C[k]}"/></a:${k}>`).join("") + "</a:clrScheme>";
   th = th.replace(/<a:clrScheme\b[\s\S]*?<\/a:clrScheme>/, () => scheme)
     .replace(/<a:ea typeface=""\/>/g, `<a:ea typeface="${FONT}"/>`)
     .replace(/<a:font script="Hans" typeface="[^"]*"\/>/g, '<a:font script="Hans" typeface="微软雅黑"/>');

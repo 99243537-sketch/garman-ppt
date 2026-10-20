@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { tag: v0.2.2, dir: skill, name: garman-ppt, asset: garman-ppt-0.2.2.zip, notes: RELEASE_NOTES.md, pre: "" }
+          - { tag: v0.3.0, dir: skill, name: garman-ppt, asset: garman-ppt-0.3.0.zip, notes: RELEASE_NOTES.md, pre: "" }
           - { tag: v0.1.2-probe, dir: skill-probe, name: garman-ppt-probe, asset: garman-ppt-probe-0.1.2.zip, notes: RELEASE_NOTES_PROBE.md, pre: "--prerelease" }
     steps:
       - uses: actions/checkout@v4
