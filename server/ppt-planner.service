@@ -1,5 +1,5 @@
 [Unit]
-Description=天然矿物色 PPT 讲稿制作 · 分页方案服务
+Description=GarmanPPT · 分页方案服务
 After=network.target
 
 [Service]

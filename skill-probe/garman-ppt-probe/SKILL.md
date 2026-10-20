@@ -1,14 +1,14 @@
 ---
-name: mineral-ppt-probe
-description: 「天然矿物色 PPT 讲稿制作」的兼容性测试。用户说「运行兼容性测试」「生成测试稿」「测试矿物色 PPT」时使用：检查本机能否运行生成脚本，并生成一份 5 页测试稿，用于在 PowerPoint 和 WPS 里检查动画、毛玻璃和字体。
+name: garman-ppt-probe
+description: 「GarmanPPT」的兼容性测试。用户说「运行兼容性测试」「生成测试稿」「测试 GarmanPPT」时使用：检查本机能否运行生成脚本，并生成一份 5 页测试稿，用于在 PowerPoint 和 WPS 里检查动画、毛玻璃和字体。
 ---
 
-# 天然矿物色 PPT 讲稿制作 · 兼容性测试
+# GarmanPPT · 兼容性测试
 
 这是正式技能发布前的测试版，只做两件事：
 
 1. 检查当前环境能不能运行生成脚本（需要 Node.js 16 或以上，以及可写的输出目录）；
-2. 生成一份 5 页的测试稿《矿物色PPT-兼容性测试稿.pptx》，内容是「iPhone 用户 Claude 接入 GitHub 攻略」。
+2. 生成一份 5 页的测试稿《GarmanPPT-兼容性测试稿.pptx》，内容是「iPhone 用户 Claude 接入 GitHub 攻略」。
 
 ## 怎么做（按顺序）
 

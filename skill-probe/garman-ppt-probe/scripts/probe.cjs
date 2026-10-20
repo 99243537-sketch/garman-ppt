@@ -15100,7 +15100,7 @@ var os = require("os");
 var pptxgen = require_pptxgen_cjs();
 var JSZip = require_lib3();
 var BG = require_bg();
-var VERSION = "probe-0.1.1";
+var VERSION = "probe-0.1.2";
 var T = {
   amz: "70C6D6",
   amzSoft: "DDF1F2",
@@ -15122,7 +15122,7 @@ var W = 13.333;
 var M = 0.6;
 var FONT = "Microsoft YaHei";
 var MARK = "0A0B0C";
-var FOOT = "\u517C\u5BB9\u6027\u6D4B\u8BD5\u7A3F \xB7 \u5929\u7136\u77FF\u7269\u8272 PPT \u8BB2\u7A3F\u5236\u4F5C";
+var FOOT = "\u517C\u5BB9\u6027\u6D4B\u8BD5\u7A3F \xB7 GarmanPPT";
 var esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 function log(...a) {
   console.log(...a);
@@ -15146,7 +15146,7 @@ function build(env) {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE";
   pres.title = "\u517C\u5BB9\u6027\u6D4B\u8BD5\u7A3F";
-  pres.author = "\u5929\u7136\u77FF\u7269\u8272 PPT \u8BB2\u7A3F\u5236\u4F5C";
+  pres.author = "GarmanPPT";
   pres.company = "";
   pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
   const ANIM = [];
@@ -15207,7 +15207,7 @@ function build(env) {
     ["3", "\u6388\u6743\u8FD9\u4E2A\u4ED3\u5E93", "\u6253\u5F00 Claude \u7684 GitHub App \u9875\uFF0C\u9009 Only select repositories\uFF0C\u52FE\u4E0A\u4ED3\u5E93\uFF0C\u70B9 Install & Authorize\u3002"]
   ], "\u6700\u540E\u544A\u8BC9 Claude\u300C\u7528\u6237\u540D/\u4ED3\u5E93\u540D\u300D\uFF0C\u5B83\u5C31\u80FD\u63A5\u5165\u5E76\u63D0\u4EA4\u4EE3\u7801\u3002", true);
   foot(s, 2);
-  s.addNotes("\u6574\u4E2A\u63A5\u5165\u53EA\u6709\u4E09\u6B65\u3002\n\u3010\u70B9\u51FB 1\u3011\u7B2C\u4E00\u6B65\uFF0C\u5148\u5728 GitHub \u4E0A\u5EFA\u4E00\u4E2A\u7A7A\u4ED3\u5E93\uFF1A\u70B9\u5934\u50CF\u83DC\u5355\u91CC\u7684 Create new repository\uFF0C\u586B\u4ED3\u5E93\u540D\uFF0C\u53EF\u89C1\u6027\u5148\u9009 Private\uFF0CREADME\u3001.gitignore\u3001license \u90FD\u4E0D\u8981\u52FE\uFF0C\u4FDD\u6301\u7A7A\u4ED3\u5E93\uFF0C\u518D\u70B9 Create repository\u3002\n\u3010\u70B9\u51FB 2\u3011\u7B2C\u4E8C\u6B65\uFF0C\u5728 Claude \u91CC\u8FDE\u63A5 GitHub\u3002\u624B\u673A App \u7684\u8BBE\u7F6E\u91CC\u6CA1\u6709\u8FD9\u4E2A\u5165\u53E3\uFF0C\u8981\u7528\u6D4F\u89C8\u5668\u6253\u5F00 claude.ai/customize/connectors\uFF0C\u5207\u5230\u300C\u6211\u7684\u300D\uFF0C\u627E\u5230 GitHub \u96C6\u6210\uFF0C\u70B9\u8FDE\u63A5\uFF0C\u8DF3\u5230 GitHub \u540E\u70B9 Authorize\u3002\u72B6\u6001\u6253\u52FE\u5C31\u662F\u8FDE\u4E0A\u4E86\u3002\n\u3010\u70B9\u51FB 3\u3011\u7B2C\u4E09\u6B65\uFF0C\u7ED9 Claude \u8FD9\u4E2A\u4ED3\u5E93\u7684\u6743\u9650\uFF1A\u6253\u5F00 github.com/apps/claude\uFF0C\u9009 Only select repositories\uFF0C\u53EA\u52FE\u8981\u7528\u7684\u4ED3\u5E93\uFF0C\u70B9 Install & Authorize\u3002GitHub \u4F1A\u518D\u786E\u8BA4\u4E00\u6B21\u8EAB\u4EFD\uFF0C\u7528 GitHub Mobile \u9009\u6570\u5B57\uFF0C\u6216\u8005\u6536\u90AE\u4EF6\u9A8C\u8BC1\u7801\u3002\n\u3010\u70B9\u51FB 4 \xB7 \u5168\u90E8\u6062\u590D\u3011\u4E09\u6B65\u505A\u5B8C\uFF0C\u56DE\u5230\u548C Claude \u7684\u5BF9\u8BDD\uFF0C\u544A\u8BC9\u5B83\u300C\u7528\u6237\u540D/\u4ED3\u5E93\u540D\u300D\uFF0C\u6BD4\u5982 99243537-sketch/mineral-ppt\uFF0C\u5B83\u5C31\u80FD\u63A5\u5165\u3002" + CHECK_FADE);
+  s.addNotes("\u6574\u4E2A\u63A5\u5165\u53EA\u6709\u4E09\u6B65\u3002\n\u3010\u70B9\u51FB 1\u3011\u7B2C\u4E00\u6B65\uFF0C\u5148\u5728 GitHub \u4E0A\u5EFA\u4E00\u4E2A\u7A7A\u4ED3\u5E93\uFF1A\u70B9\u5934\u50CF\u83DC\u5355\u91CC\u7684 Create new repository\uFF0C\u586B\u4ED3\u5E93\u540D\uFF0C\u53EF\u89C1\u6027\u5148\u9009 Private\uFF0CREADME\u3001.gitignore\u3001license \u90FD\u4E0D\u8981\u52FE\uFF0C\u4FDD\u6301\u7A7A\u4ED3\u5E93\uFF0C\u518D\u70B9 Create repository\u3002\n\u3010\u70B9\u51FB 2\u3011\u7B2C\u4E8C\u6B65\uFF0C\u5728 Claude \u91CC\u8FDE\u63A5 GitHub\u3002\u624B\u673A App \u7684\u8BBE\u7F6E\u91CC\u6CA1\u6709\u8FD9\u4E2A\u5165\u53E3\uFF0C\u8981\u7528\u6D4F\u89C8\u5668\u6253\u5F00 claude.ai/customize/connectors\uFF0C\u5207\u5230\u300C\u6211\u7684\u300D\uFF0C\u627E\u5230 GitHub \u96C6\u6210\uFF0C\u70B9\u8FDE\u63A5\uFF0C\u8DF3\u5230 GitHub \u540E\u70B9 Authorize\u3002\u72B6\u6001\u6253\u52FE\u5C31\u662F\u8FDE\u4E0A\u4E86\u3002\n\u3010\u70B9\u51FB 3\u3011\u7B2C\u4E09\u6B65\uFF0C\u7ED9 Claude \u8FD9\u4E2A\u4ED3\u5E93\u7684\u6743\u9650\uFF1A\u6253\u5F00 github.com/apps/claude\uFF0C\u9009 Only select repositories\uFF0C\u53EA\u52FE\u8981\u7528\u7684\u4ED3\u5E93\uFF0C\u70B9 Install & Authorize\u3002GitHub \u4F1A\u518D\u786E\u8BA4\u4E00\u6B21\u8EAB\u4EFD\uFF0C\u7528 GitHub Mobile \u9009\u6570\u5B57\uFF0C\u6216\u8005\u6536\u90AE\u4EF6\u9A8C\u8BC1\u7801\u3002\n\u3010\u70B9\u51FB 4 \xB7 \u5168\u90E8\u6062\u590D\u3011\u4E09\u6B65\u505A\u5B8C\uFF0C\u56DE\u5230\u548C Claude \u7684\u5BF9\u8BDD\uFF0C\u544A\u8BC9\u5B83\u300C\u7528\u6237\u540D/\u4ED3\u5E93\u540D\u300D\uFF0C\u6BD4\u5982 99243537-sketch/garman-ppt\uFF0C\u5B83\u5C31\u80FD\u63A5\u5165\u3002" + CHECK_FADE);
   s = slide(T.amzPale, { kind: "mask", steps: [["C1"], ["A1", "C2"], ["A2", "C3"]], end: "K" });
   head(s, "\u653B\u7565 \xB7 \u5F00\u59CB\u524D\uFF08\u6D4B\u8BD5 B\uFF1A\u8499\u5C42\u52A8\u753B\uFF09", "\u5148\u8BA4\u51C6 Claude \u7528\u7684\u662F\u54EA\u4E2A\u8D26\u53F7");
   flowCards(s, [
@@ -15395,7 +15395,7 @@ async function postProcess(buf, ANIM) {
 }
 (async () => {
   const outDir = path.resolve(process.argv[2] || process.cwd());
-  log("== \u5929\u7136\u77FF\u7269\u8272 PPT \u8BB2\u7A3F\u5236\u4F5C \xB7 \u517C\u5BB9\u6027\u6D4B\u8BD5 " + VERSION + " ==");
+  log("== GarmanPPT \xB7 \u517C\u5BB9\u6027\u6D4B\u8BD5 " + VERSION + " ==");
   const env = envCheck(outDir);
   log("Node \u7248\u672C\uFF1A" + env.node + (env.nodeOk ? "\uFF08\u53EF\u7528\uFF09" : "\uFF08\u592A\u65E7\uFF0C\u9700\u8981 16 \u6216\u4EE5\u4E0A\uFF09"));
   log("\u7CFB\u7EDF\uFF1A" + env.platform + " " + env.arch);
@@ -15407,7 +15407,7 @@ async function postProcess(buf, ANIM) {
   const { pres, ANIM } = build(env);
   const raw = await pres.write({ outputType: "nodebuffer" });
   const out = await postProcess(raw, ANIM);
-  const file = path.join(outDir, "\u77FF\u7269\u8272PPT-\u517C\u5BB9\u6027\u6D4B\u8BD5\u7A3F.pptx");
+  const file = path.join(outDir, "GarmanPPT-\u517C\u5BB9\u6027\u6D4B\u8BD5\u7A3F.pptx");
   fs.writeFileSync(file, out);
   log("\u6D4B\u8BD5\u7A3F\uFF1A" + file + "\uFF08" + Math.round(out.length / 1024) + " KB\uFF0C5 \u9875\uFF09");
   log("\u7ED3\u679C\uFF1A\u73AF\u5883\u68C0\u67E5\u901A\u8FC7\uFF0C\u6D4B\u8BD5\u7A3F\u5DF2\u751F\u6210\u3002\u8BF7\u628A\u8FD9\u4E2A\u6587\u4EF6\u4EA4\u7ED9\u7528\u6237\uFF0C\u5728 PowerPoint \u548C WPS \u91CC\u5206\u522B\u653E\u6620\u68C0\u67E5\u3002");

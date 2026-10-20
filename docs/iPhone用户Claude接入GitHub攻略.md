@@ -5,7 +5,7 @@
 ## 一、先在 GitHub 建一个空仓库
 
 1. 手机浏览器打开 github.com，点头像菜单 → **Create new repository**。
-2. Repository name 填仓库名（如 `mineral-ppt`）；可见性先选 **Private**。
+2. Repository name 填仓库名（如 `garman-ppt`）；可见性先选 **Private**。
 3. **Add README、.gitignore、License 都不要选**，保持空仓库。
 4. 点 **Create repository**。
 
@@ -43,7 +43,7 @@
 
 ## 六、回到对话
 
-告诉 Claude 仓库的「用户名/仓库名」，例如 `99243537-sketch/mineral-ppt`。Claude 接入成功后就能提交和发布。
+告诉 Claude 仓库的「用户名/仓库名」，例如 `99243537-sketch/garman-ppt`。Claude 接入成功后就能提交和发布。
 
 ## 常见问题
 

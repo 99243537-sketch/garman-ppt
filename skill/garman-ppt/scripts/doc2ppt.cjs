@@ -15666,7 +15666,7 @@ function printCheck(r) {
 }
 (async () => {
   const [cmd, a, b] = process.argv.slice(2);
-  log(`== \u5929\u7136\u77FF\u7269\u8272 PPT \u8BB2\u7A3F\u5236\u4F5C \xB7 doc2ppt ${VERSION} ==`);
+  log(`== GarmanPPT \xB7 doc2ppt ${VERSION} ==`);
   if (+process.version.slice(1).split(".")[0] < 16) die("\u9700\u8981 Node.js 16 \u6216\u4EE5\u4E0A\uFF0C\u5F53\u524D " + process.version, 2);
   if (cmd === "parse") {
     if (!a || !b) die("\u7528\u6CD5\uFF1Anode doc2ppt.cjs parse <\u6587\u6863> <\u5DE5\u4F5C\u76EE\u5F55>");

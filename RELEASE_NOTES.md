@@ -1,6 +1,6 @@
-GarmanPPT · 天然矿物色 PPT 讲稿制作（garman-ppt）0.2.2 试用版
+GarmanPPT（garman-ppt）0.2.2 试用版
 
-0.2.2：技能改名为 GarmanPPT（技能名 garman-ppt，压缩包 garman-ppt-0.2.2.zip），功能与 0.2.1 相同。
+0.2.2：技能改名为 GarmanPPT（技能名 garman-ppt，压缩包 garman-ppt-0.2.2.zip，仓库改名为 garman-ppt），功能与 0.2.1 相同。
 
 把已定稿的文档（.docx / .md / .txt）转换成可编辑的 PPTX：
 - 忠实原文：页面只放原文摘句，完整原文按点击分段放进讲稿备注，由脚本逐字校验；
