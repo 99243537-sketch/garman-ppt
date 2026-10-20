@@ -15181,7 +15181,7 @@ ${String(ex)}`);
 // src/themes.js
 var require_themes = __commonJS({
   "src/themes.js"(exports2, module2) {
-    var THEMES = {
+    var THEMES2 = {
       "\u5929\u6CB3\u77F3": {
         "kind": "\u77FF\u7269",
         "tier": "\u96C5\u81F4",
@@ -15379,7 +15379,7 @@ var require_themes = __commonJS({
       }
     };
     var DEFAULT_THEME = "\u5929\u6CB3\u77F3";
-    module2.exports = { THEMES, DEFAULT_THEME };
+    module2.exports = { THEMES: THEMES2, DEFAULT_THEME };
   }
 });
 
@@ -15390,11 +15390,11 @@ var require_post = __commonJS({
     var esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     var FONT = "Microsoft YaHei";
     var MARK = "0A0B0C";
-    var { THEMES, DEFAULT_THEME } = require_themes();
+    var { THEMES: THEMES2, DEFAULT_THEME } = require_themes();
     var V23 = { dk1: "243335", lt1: "FFFFFF", dk2: "122947", lt2: "EFF8F9", accent1: "70C6D6", accent2: "1B667A", accent3: "245F4D", accent4: "59652E", accent5: "B04D2F", accent6: "315F91", hlink: "315F91", folHlink: "1B667A" };
     var schemeOf = (name) => {
       if (name === DEFAULT_THEME) return V23;
-      const t = THEMES[name];
+      const t = THEMES2[name];
       return { dk1: t.ink, lt1: "FFFFFF", dk2: t.base, lt2: t.pale, accent1: t.main, accent2: t.deep, accent3: t.base, accent4: t.muted, accent5: t.accent, accent6: t.soft, hlink: t.deep, folHlink: t.muted };
     };
     var SLOTS = ["dk1", "lt1", "dk2", "lt2", "accent1", "accent2", "accent3", "accent4", "accent5", "accent6", "hlink", "folHlink"];
@@ -15541,7 +15541,7 @@ var require_core = __commonJS({
     var pptxgen = require_pptxgen_cjs();
     var { postProcess } = require_post();
     var GBG = require_glassbg();
-    var { THEMES, DEFAULT_THEME } = require_themes();
+    var { THEMES: THEMES2, DEFAULT_THEME } = require_themes();
     var MARK = "0A0B0C";
     var W = 13.333;
     var M = 0.6;
@@ -15582,7 +15582,7 @@ var require_core = __commonJS({
       if (!plan || !Array.isArray(plan.slides) || !plan.slides.length) return { ok: false, errs: ["\u65B9\u6848\u91CC\u6CA1\u6709 slides"], warns };
       if (plan.footer) ex(plan.footer, "\u9875\u811A footer");
       if (plan.style && !["normal", "glass"].includes(plan.style)) errs.push(`style \u53EA\u80FD\u662F "normal"\uFF08\u666E\u901A\uFF09\u6216 "glass"\uFF08\u6BDB\u73BB\u7483\uFF09`);
-      if (plan.theme !== void 0 && !THEMES[plan.theme]) errs.push(`theme \u914D\u8272\u300C${plan.theme}\u300D\u4E0D\u5B58\u5728\uFF0C\u53EA\u80FD\u7528\uFF1A${Object.keys(THEMES).join("\u3001")}`);
+      if (plan.theme !== void 0 && !THEMES2[plan.theme]) errs.push(`theme \u914D\u8272\u300C${plan.theme}\u300D\u4E0D\u5B58\u5728\uFF0C\u53EA\u80FD\u7528\uFF1A${Object.keys(THEMES2).join("\u3001")}`);
       else if (plan.style === "glass" && plan.theme && plan.theme !== DEFAULT_THEME) errs.push(`\u6BDB\u73BB\u7483\u662F\u5B9E\u9A8C\u6548\u679C\uFF0C\u53EA\u914D\u5929\u6CB3\u77F3\uFF1B\u9009\u4E86\u300C${plan.theme}\u300D\u5C31\u8BF7\u7528\u666E\u901A\u6548\u679C\uFF08\u5220\u6389 style \u6216\u5199 "normal"\uFF09`);
       plan.slides.forEach((s, i) => {
         if (!TYPES.includes(s.type)) {
@@ -15681,7 +15681,7 @@ var require_core = __commonJS({
       pres.company = "";
       pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
       const G = plan.style === "glass";
-      const T = THEMES[plan.theme || DEFAULT_THEME];
+      const T = THEMES2[plan.theme || DEFAULT_THEME];
       const C = G ? { title: T.white, kicker: T.main, ink: T.white, muted: T.soft, rule: T.white, concl: T.main, mark: T.main, arrow: T.main } : { title: T.base, kicker: T.deep, ink: T.ink, muted: T.muted, rule: T.line, concl: T.accent, mark: T.deep, arrow: T.deep };
       const ANIM = [];
       let n = 0;
@@ -15862,6 +15862,7 @@ var { parse } = require_parse();
 var { check, build } = require_core();
 var { makeReport } = require_report();
 var { VERSION } = require_version();
+var { THEMES } = require_themes();
 var log = (...a) => console.log(...a);
 var die = (m, code = 1) => {
   console.error(m);
@@ -15880,7 +15881,9 @@ function printCheck(r) {
   log(r.ok ? "\u6821\u9A8C\u901A\u8FC7\u3002" : `\u6821\u9A8C\u672A\u901A\u8FC7\uFF1A${r.errs.length} \u4E2A\u95EE\u9898\u3002\u8BF7\u6309\u4E0A\u9762\u7684\u63D0\u793A\u4FEE\u6539 plan.json \u540E\u518D\u8FD0\u884C check\u3002`);
 }
 (async () => {
-  const [cmd, a, b] = process.argv.slice(2);
+  const argv = process.argv.slice(2), ti = argv.indexOf("--theme");
+  const themeArg = ti >= 0 ? argv.splice(ti, 2)[1] || "" : null;
+  const [cmd, a, b] = argv;
   log(`== GarmanPPT \xB7 doc2ppt ${VERSION} ==`);
   if (+process.version.slice(1).split(".")[0] < 16) die("\u9700\u8981 Node.js 16 \u6216\u4EE5\u4E0A\uFF0C\u5F53\u524D " + process.version, 2);
   if (cmd === "parse") {
@@ -15900,17 +15903,32 @@ function printCheck(r) {
   } else if (cmd === "check" || cmd === "build") {
     if (!a) die(`\u7528\u6CD5\uFF1Anode doc2ppt.cjs ${cmd} <\u5DE5\u4F5C\u76EE\u5F55>`);
     const doc = readJSON(path.join(a, "paras.json")), plan = readJSON(path.join(a, "plan.json"));
-    const r = check(doc, plan);
+    const themes = themeArg === null ? [plan.theme] : themeArg.split(/[,，、\s]+/).filter(Boolean);
+    if (themeArg !== null) {
+      if (!themes.length) die("--theme \u540E\u9762\u8981\u5199\u914D\u8272\u540D\u79F0\uFF0C\u5982 --theme \u94F6\u674F \u6216 --theme \u94F6\u674F,\u9E22\u5C3E,\u5929\u6CB3\u77F3");
+      const bad = themes.filter((t) => !THEMES[t]);
+      if (bad.length) die(`\u914D\u8272\u300C${bad.join("\u3001")}\u300D\u4E0D\u5B58\u5728\uFF0C\u53EA\u80FD\u7528\uFF1A${Object.keys(THEMES).join("\u3001")}`);
+    }
+    const plans = themes.map((t) => t === void 0 ? plan : Object.assign({}, plan, { theme: t }));
+    let r;
+    for (const p of plans) {
+      r = check(doc, p);
+      if (!r.ok) break;
+    }
     printCheck(r);
     if (!r.ok) process.exit(3);
     if (cmd === "check") return;
     const out = b || path.join(a, (doc.source || "\u6F14\u793A\u6587\u7A3F").replace(/\.[^.]+$/, "") + ".pptx");
-    fs.writeFileSync(out, await build(doc, plan));
-    const rep = makeReport(doc, plan, path.basename(out), r.warns, VERSION);
+    const outs = plans.length > 1 ? plans.map((p) => out.replace(/(\.pptx)?$/i, `-${p.theme}.pptx`)) : [out];
+    for (let k = 0; k < plans.length; k++) {
+      fs.writeFileSync(outs[k], await build(doc, plans[k]));
+      log(`\u5DF2\u751F\u6210\uFF1A${outs[k]}`);
+    }
+    const rp = plans.length > 1 ? Object.assign({}, plan, { theme: themes.join("\u3001") }) : plans[0];
+    const rep = makeReport(doc, rp, outs.map((o) => path.basename(o)).join("\u3001"), r.warns, VERSION);
     fs.writeFileSync(path.join(path.dirname(out), "\u751F\u6210\u62A5\u544A.md"), rep);
-    log(`\u5DF2\u751F\u6210\uFF1A${out}`);
     log(`\u751F\u6210\u62A5\u544A\uFF1A${path.join(path.dirname(out), "\u751F\u6210\u62A5\u544A.md")}`);
   } else {
-    log("\u7528\u6CD5\uFF1A\n  node doc2ppt.cjs parse <\u6587\u6863> <\u5DE5\u4F5C\u76EE\u5F55>\n  node doc2ppt.cjs check <\u5DE5\u4F5C\u76EE\u5F55>\n  node doc2ppt.cjs build <\u5DE5\u4F5C\u76EE\u5F55> [\u8F93\u51FA.pptx]");
+    log("\u7528\u6CD5\uFF1A\n  node doc2ppt.cjs parse <\u6587\u6863> <\u5DE5\u4F5C\u76EE\u5F55>\n  node doc2ppt.cjs check <\u5DE5\u4F5C\u76EE\u5F55>\n  node doc2ppt.cjs build <\u5DE5\u4F5C\u76EE\u5F55> [\u8F93\u51FA.pptx] [--theme \u94F6\u674F,\u9E22\u5C3E,\u5929\u6CB3\u77F3]");
   }
 })().catch((e) => die("\u51FA\u9519\uFF1A" + (e && e.stack || e)));
