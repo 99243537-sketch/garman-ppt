@@ -88,4 +88,9 @@
 ## 2026-10-20 改名 GarmanPPT（0.2.2）
 - 赵盾为便于记忆，全部改名为 GarmanPPT：技能 garman-ppt（skill/garman-ppt/，Release v0.2.2 附件 garman-ppt-0.2.2.zip）；兼容性测试技能 garman-ppt-probe（v0.1.2-probe，测试稿《GarmanPPT-兼容性测试稿.pptx》）；网页版标题、服务端提示词与说明；仓库改名为 99243537-sketch/garman-ppt（GitHub 自动跳转旧地址）。功能不变。
 - 没有 esbuild，单文件脚本（doc2ppt.cjs、probe.cjs）里的名称和版本号是直接替换的；网页版 doc2ppt.browser.js 未重新打包，内部版本号仍为 0.2.1。下次重新打包时以 src 为准。
-- 网站专题页 https://www.zhaodun.work/ppt/ 和 Eddy 的拉取地址需同步改。
+- 网站上只需改 Skill 介绍页的文字和下载链接（见下一节），Eddy 的拉取地址需同步改。
+
+## 2026-10-20 网页版取消
+- 赵盾决定取消网页版讲稿制作项目，只保留技能（GarmanPPT）。Eddy 已于 10-20 撤下：ppt-planner 服务已停用（inactive + disabled），原网页备份在 /ppt-offline-20261020/，Nginx 的 /ppt-api/ 段已注释。
+- https://www.zhaodun.work/ppt/ 现在是 Eddy 做的 Skill 介绍页（中英双语，另有 /ppt/en/、/letter.html、main.html 入口）。技能发新版时只更新这些页面的文字和下载链接，不要部署 web/ 和 server/。
+- 仓库里的 web/、server/ 和 docs/部署说明-给Eddy.md 只作存档，不再维护。
