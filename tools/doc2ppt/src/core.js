@@ -41,7 +41,6 @@ function check(doc, plan) {
   if (plan.footer) ex(plan.footer, "页脚 footer");
   if (plan.style && !["normal", "glass"].includes(plan.style)) errs.push(`style 只能是 "normal"（普通）或 "glass"（毛玻璃）`);
   if (plan.theme !== undefined && !THEMES[plan.theme]) errs.push(`theme 配色「${plan.theme}」不存在，只能用：${Object.keys(THEMES).join("、")}`);
-  else if (plan.style === "glass" && plan.theme && plan.theme !== DEFAULT_THEME) errs.push(`毛玻璃是实验效果，只配天河石；选了「${plan.theme}」就请用普通效果（删掉 style 或写 "normal"）`);
   plan.slides.forEach((s, i) => {
     if (!TYPES.includes(s.type)) { errs.push(`${at(i)}：页面类型 ${s.type} 不存在，只能用 ${TYPES.join("、")}`); return; }
     const w = at(i, s.type);
@@ -138,9 +137,9 @@ async function build(doc, plan, opts = {}) {
   const slide = (bg, anim) => {
     const s = pres.addSlide(); ANIM.push(anim || null);
     if (!G) { s.background = { color: bg }; return s; }
-    s.background = { data: "image/jpeg;base64," + GBG.plain };
+    s.background = { data: "image/jpeg;base64," + GBG[plan.theme || DEFAULT_THEME].plain };
     // 压暗底图：后处理时作为玻璃框的图片填充（按位置裁取），本身删除
-    s.addImage({ data: "image/jpeg;base64," + GBG.dark, x: 0, y: 0, w: 0.5, h: 0.28, objectName: "bgdark" });
+    s.addImage({ data: "image/jpeg;base64," + GBG[plan.theme || DEFAULT_THEME].dark, x: 0, y: 0, w: 0.5, h: 0.28, objectName: "bgdark" });
     return s;
   };
   const brand = (s) => s.addShape(pres.shapes.RECTANGLE, { x: 9.6, y: 0, w: W - 9.6, h: 7.5, fill: { color: T.base }, line: { type: "none" }, objectName: "bar" });

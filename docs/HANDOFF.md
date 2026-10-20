@@ -100,7 +100,8 @@
 - plan.json 顶层新增 `"theme"`（13 个中文名之一，默认天河石）。不写 theme 时页面 XML 与 0.2.2 逐字节一致（主题色板只改了名字）。
 - 配色由 `tools/palette/derive.py` 生成 `tools/doc2ppt/src/themes.js`；规则见 docs/Garman色彩规范-v3.md。角色名改为 main/soft/pale/deep/base/accent/ink/muted/line。
 - 打包：npm 现在可用；esbuild + pptxgenjs@4.0.1 + jszip@3.10.1 装在任意目录，软链到 /opt/npm-tools 后带 `--preserve-symlinks` 打包，产物里的路径注释才和以前一致。
-- 选色流程（赵盾同意）：在智能体里选完，不跳网站。SKILL.md 让智能体推荐 3 套并发配色一览图；`build … --theme 银杏,鸢尾,天河石` 一次出多个配色版本（文件名带配色名），`--theme 银杏` 做完后换色，都不改 plan.json。网站计划做「Garman 自然色图鉴」页（如 /ppt/colors/），名称须与技能一致；页面上线后再把链接写进 SKILL.md。
-- 毛玻璃全套配色已试做（背景按各套颜色生成，对比度达标，脚本约增大到 2.1MB），待赵盾决定是否放进 0.3.0。
+- 选色流程（赵盾同意）：在智能体里选完，不跳网站。SKILL.md 让智能体推荐 3 套并发配色一览图；`build … --theme 银杏,鸢尾,天河石` 一次出多个配色版本（文件名带配色名），`--theme 银杏` 做完后换色，都不改 plan.json。网站计划做「Garman 自然色图鉴」页（如 /ppt/colors/），名称须与技能一致；
+- 毛玻璃全套配色（赵盾决定放进 0.3.0）：`make_glass.py src/glassbg.js` 读 themes.js 逐套生成底图，天河石沿用原图（与 0.2.2 一致）；glassbg.js 改为 {配色名: {plain, dark}}，脚本约 2.1MB。
+- 图鉴网站：https://www.zhaodun.work/color/ ，已写进 SKILL.md 与 RELEASE_NOTES；提示词与素材包另交给赵盾。
 - 待做：新配色在 PowerPoint、WPS 上放映复核；网站 /ppt/ 介绍页更新文字和下载链接（garman-ppt-0.3.0.zip）。
 - 以后可议：多主色（乌桕、鸳鸯、鲍鱼壳）、红色系深色封面。
