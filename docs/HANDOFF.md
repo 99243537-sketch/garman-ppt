@@ -84,3 +84,7 @@
 - 实测 2 万字文档在 MiniMax-M2.7 上十几分钟出不来（前端 12 分钟轮询上限触发）。赵老师决定先放一放，网页版只做 5000 字以内；长文档引导用技能。
 - MAX_DOC_CHARS 默认 5000（服务器 .env 需同步改）；前端 MAXC=5000（可用 window.PPT_MAX_CHARS 覆盖）。
 - 以后若要支持长文档：按章节切段（每段 3–5 千字），并发分页后合并 slides（封面/目录/结尾只由首末段生成），再统一校验。
+
+## 2026-10-20 改名 GarmanPPT（0.2.2）
+- 赵盾为便于记忆，把技能名改为 GarmanPPT：SKILL.md name 为 garman-ppt，目录 skill/garman-ppt/，Release v0.2.2 附件 garman-ppt-0.2.2.zip。功能与 0.2.1 相同。
+- 仓库名、网页版、兼容性测试技能（mineral-ppt-probe）暂未改名；网页版 doc2ppt.browser.js 内版本号仍为 0.2.1（未重新打包）。
