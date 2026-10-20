@@ -1,4 +1,4 @@
-// 天然矿物色 PPT 讲稿制作 · doc2ppt
+// GarmanPPT · doc2ppt
 // 用法：
 //   node doc2ppt.cjs parse <文档.docx|.md|.txt> <工作目录>     → 工作目录/paras.json、paras.txt
 //   node doc2ppt.cjs check <工作目录>                           → 校验 工作目录/plan.json
@@ -21,7 +21,7 @@ function printCheck(r) {
 
 (async () => {
   const [cmd, a, b] = process.argv.slice(2);
-  log(`== 天然矿物色 PPT 讲稿制作 · doc2ppt ${VERSION} ==`);
+  log(`== GarmanPPT · doc2ppt ${VERSION} ==`);
   if (+process.version.slice(1).split(".")[0] < 16) die("需要 Node.js 16 或以上，当前 " + process.version, 2);
   if (cmd === "parse") {
     if (!a || !b) die("用法：node doc2ppt.cjs parse <文档> <工作目录>");

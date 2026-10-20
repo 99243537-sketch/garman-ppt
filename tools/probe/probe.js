@@ -1,4 +1,4 @@
-// 天然矿物色 PPT 讲稿制作 · 兼容性测试技能
+// GarmanPPT · 兼容性测试技能
 // 用法：node probe.cjs [输出目录]
 // 作用：1）检查运行环境；2）生成一份 5 页测试稿，用来在 PowerPoint / WPS 里检查动画、毛玻璃和字体。
 const fs = require("fs");
@@ -8,14 +8,14 @@ const pptxgen = require("pptxgenjs");
 const JSZip = require("jszip");
 const BG = require("./bg.js"); // 毛玻璃：{ bg: 背景, patches: 每个玻璃框的局部压暗图 }（base64 JPEG）
 
-const VERSION = "probe-0.1.1";
+const VERSION = "probe-0.1.2";
 const T = {
   amz: "70C6D6", amzSoft: "DDF1F2", amzPale: "EFF8F9", amzDeep: "1B667A", lapis: "122947", lapisBlue: "315F91",
   mal: "245F4D", pyro: "59652E", van: "B04D2F", gallery: "FAFBF9", white: "FFFFFF", ink: "243335", muted: "53686A", line: "C8D5D4",
 };
 const THEME = { dk1: T.ink, lt1: T.white, dk2: T.lapis, lt2: T.amzPale, accent1: T.amz, accent2: T.amzDeep, accent3: T.mal, accent4: T.pyro, accent5: T.van, accent6: T.lapisBlue, hlink: T.lapisBlue, folHlink: T.amzDeep };
 const W = 13.333, M = 0.6, FONT = "Microsoft YaHei", MARK = "0A0B0C";
-const FOOT = "兼容性测试稿 · 天然矿物色 PPT 讲稿制作";
+const FOOT = "兼容性测试稿 · GarmanPPT";
 const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 function log(...a) { console.log(...a); }
@@ -33,7 +33,7 @@ function envCheck(outDir) {
 function build(env) {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_WIDE";
-  pres.title = "兼容性测试稿"; pres.author = "天然矿物色 PPT 讲稿制作"; pres.company = "";
+  pres.title = "兼容性测试稿"; pres.author = "GarmanPPT"; pres.company = "";
   pres.theme = { headFontFace: FONT, bodyFontFace: FONT };
   const ANIM = []; // 每页一个点击序列（或 null）
   let n = 0;
@@ -90,7 +90,7 @@ function build(env) {
     ["3", "授权这个仓库", "打开 Claude 的 GitHub App 页，选 Only select repositories，勾上仓库，点 Install & Authorize。"],
   ], "最后告诉 Claude「用户名/仓库名」，它就能接入并提交代码。", true);
   foot(s, 2);
-  s.addNotes("整个接入只有三步。\n【点击 1】第一步，先在 GitHub 上建一个空仓库：点头像菜单里的 Create new repository，填仓库名，可见性先选 Private，README、.gitignore、license 都不要勾，保持空仓库，再点 Create repository。\n【点击 2】第二步，在 Claude 里连接 GitHub。手机 App 的设置里没有这个入口，要用浏览器打开 claude.ai/customize/connectors，切到「我的」，找到 GitHub 集成，点连接，跳到 GitHub 后点 Authorize。状态打勾就是连上了。\n【点击 3】第三步，给 Claude 这个仓库的权限：打开 github.com/apps/claude，选 Only select repositories，只勾要用的仓库，点 Install & Authorize。GitHub 会再确认一次身份，用 GitHub Mobile 选数字，或者收邮件验证码。\n【点击 4 · 全部恢复】三步做完，回到和 Claude 的对话，告诉它「用户名/仓库名」，比如 99243537-sketch/mineral-ppt，它就能接入。" + CHECK_FADE);
+  s.addNotes("整个接入只有三步。\n【点击 1】第一步，先在 GitHub 上建一个空仓库：点头像菜单里的 Create new repository，填仓库名，可见性先选 Private，README、.gitignore、license 都不要勾，保持空仓库，再点 Create repository。\n【点击 2】第二步，在 Claude 里连接 GitHub。手机 App 的设置里没有这个入口，要用浏览器打开 claude.ai/customize/connectors，切到「我的」，找到 GitHub 集成，点连接，跳到 GitHub 后点 Authorize。状态打勾就是连上了。\n【点击 3】第三步，给 Claude 这个仓库的权限：打开 github.com/apps/claude，选 Only select repositories，只勾要用的仓库，点 Install & Authorize。GitHub 会再确认一次身份，用 GitHub Mobile 选数字，或者收邮件验证码。\n【点击 4 · 全部恢复】三步做完，回到和 Claude 的对话，告诉它「用户名/仓库名」，比如 99243537-sketch/garman-ppt，它就能接入。" + CHECK_FADE);
 
   // ===== 第 3 页：测试 B 蒙层动画 · 先认准账号 =====
   s = slide(T.amzPale, { kind: "mask", steps: [["C1"], ["A1", "C2"], ["A2", "C3"]], end: "K" });
@@ -253,7 +253,7 @@ async function postProcess(buf, ANIM) {
 
 (async () => {
   const outDir = path.resolve(process.argv[2] || process.cwd());
-  log("== 天然矿物色 PPT 讲稿制作 · 兼容性测试 " + VERSION + " ==");
+  log("== GarmanPPT · 兼容性测试 " + VERSION + " ==");
   const env = envCheck(outDir);
   log("Node 版本：" + env.node + (env.nodeOk ? "（可用）" : "（太旧，需要 16 或以上）"));
   log("系统：" + env.platform + " " + env.arch);
@@ -262,7 +262,7 @@ async function postProcess(buf, ANIM) {
   const { pres, ANIM } = build(env);
   const raw = await pres.write({ outputType: "nodebuffer" });
   const out = await postProcess(raw, ANIM);
-  const file = path.join(outDir, "矿物色PPT-兼容性测试稿.pptx");
+  const file = path.join(outDir, "GarmanPPT-兼容性测试稿.pptx");
   fs.writeFileSync(file, out);
   log("测试稿：" + file + "（" + Math.round(out.length / 1024) + " KB，5 页）");
   log("结果：环境检查通过，测试稿已生成。请把这个文件交给用户，在 PowerPoint 和 WPS 里分别放映检查。");

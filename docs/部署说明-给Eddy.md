@@ -1,4 +1,4 @@
-# 部署说明：天然矿物色 PPT 讲稿制作（网页版）
+# 部署说明：GarmanPPT（网页版）
 
 Eddy，请按下面的步骤部署。结构和文章生成服务一样：静态页面 + 本机小服务 + Nginx 反代。新服务**只用 Python 标准库**，不需要 pip 安装任何依赖。
 
@@ -58,6 +58,6 @@ Eddy，请按下面的步骤部署。结构和文章生成服务一样：静态�
 - **隐私**：文档在访客浏览器里读取和生成 PPT，服务器只收到段落文字，用完即丢；`usage.db` 只记录日期、访客哈希（不存原始 IP）、字数、成功与否、耗时、token 数。
 - **限流**：同一访客（IP + 浏览器 ID）每天 5 次；方案校验不通过时，页面会带着错误自动请模型修正，最多 2 次，不另外计次。
 - **费用**：每次调用的 token 数记在 `usage.db` 的 note 字段，可以和文章生成服务一起统计。
-- **更新**：以后代码在 GitHub 仓库 99243537-sketch/mineral-ppt 的 `web/`、`server/` 目录，更新时覆盖这两个位置的文件，然后 `sudo systemctl restart ppt-planner`。
+- **更新**：以后代码在 GitHub 仓库 99243537-sketch/garman-ppt 的 `web/`、`server/` 目录，更新时覆盖这两个位置的文件，然后 `sudo systemctl restart ppt-planner`。
 
 部署完成后请告诉我：health 返回什么、实际生成是否成功、耗时多少；失败的话把页面上的错误提示和 `journalctl` 最后几行发我。

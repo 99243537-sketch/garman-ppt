@@ -3,7 +3,7 @@
 新会话从这里接着做。
 
 ## 已定
-- 产品名「天然矿物色 PPT 讲稿制作」，仓库 99243537-sketch/mineral-ppt（私有）。
+- 产品名 GarmanPPT（2026-10-20 前叫「天然矿物色 PPT 讲稿制作」/ mineral-ppt），仓库 99243537-sketch/garman-ppt（公开）。
 - 第一阶段只做技能版：AI 只出「分页方案」，程序校验（摘句逐字、备注全覆盖）后排版生成；不接大模型 API。
 - 第二阶段才做网页版（上传即生成，需接国产模型 API、应用登记）。
 - 发布：GitHub 为准，打 v* 标签自动发 Release；网站由 Eddy 定时从 GitHub 拉取放到 zhaodun.work 下载页（仓库需公开或给 Eddy 只读令牌）。
@@ -84,3 +84,8 @@
 - 实测 2 万字文档在 MiniMax-M2.7 上十几分钟出不来（前端 12 分钟轮询上限触发）。赵老师决定先放一放，网页版只做 5000 字以内；长文档引导用技能。
 - MAX_DOC_CHARS 默认 5000（服务器 .env 需同步改）；前端 MAXC=5000（可用 window.PPT_MAX_CHARS 覆盖）。
 - 以后若要支持长文档：按章节切段（每段 3–5 千字），并发分页后合并 slides（封面/目录/结尾只由首末段生成），再统一校验。
+
+## 2026-10-20 改名 GarmanPPT（0.2.2）
+- 赵盾为便于记忆，全部改名为 GarmanPPT：技能 garman-ppt（skill/garman-ppt/，Release v0.2.2 附件 garman-ppt-0.2.2.zip）；兼容性测试技能 garman-ppt-probe（v0.1.2-probe，测试稿《GarmanPPT-兼容性测试稿.pptx》）；网页版标题、服务端提示词与说明；仓库改名为 99243537-sketch/garman-ppt（GitHub 自动跳转旧地址）。功能不变。
+- 没有 esbuild，单文件脚本（doc2ppt.cjs、probe.cjs）里的名称和版本号是直接替换的；网页版 doc2ppt.browser.js 未重新打包，内部版本号仍为 0.2.1。下次重新打包时以 src 为准。
+- 网站专题页 https://www.zhaodun.work/ppt/ 和 Eddy 的拉取地址需同步改。

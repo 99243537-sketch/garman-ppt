@@ -1,4 +1,6 @@
-天然矿物色 PPT 讲稿制作（mineral-ppt）0.2.1 试用版
+GarmanPPT（garman-ppt）0.2.2 试用版
+
+0.2.2：技能改名为 GarmanPPT（技能名 garman-ppt，压缩包 garman-ppt-0.2.2.zip，仓库改名为 garman-ppt），功能与 0.2.1 相同。
 
 把已定稿的文档（.docx / .md / .txt）转换成可编辑的 PPTX：
 - 忠实原文：页面只放原文摘句，完整原文按点击分段放进讲稿备注，由脚本逐字校验；
@@ -7,6 +9,6 @@
 - 排版修正与错别字清单写入生成报告，错别字经用户确认后才改。
 
 用法：把压缩包和文档一起发给 WorkBuddy、OpenClaw、ChatGPT 等能运行代码的智能体，说：
-「请解压技能包，按 mineral-ppt/SKILL.md 的步骤，把这份文档做成 PPT。」（需要毛玻璃效果就加上「毛玻璃效果」）
+「请解压技能包，按 garman-ppt/SKILL.md 的步骤，把这份文档做成 PPT。」（需要毛玻璃效果就加上「毛玻璃效果」）
 
 已验证：WorkBuddy 实测普通、毛玻璃两种效果；PowerPoint、WPS 放映正常。
