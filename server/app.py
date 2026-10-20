@@ -45,7 +45,7 @@ GLOBAL_DAILY_LIMIT = int(E("GLOBAL_DAILY_LIMIT", "200"))  # 全站每天（防�
 MAX_CONCURRENT = int(E("MAX_CONCURRENT", "3"))           # 同时调用大模型的最多几份
 MAX_QUEUE = int(E("MAX_QUEUE", "20"))                    # 排队 + 进行中最多几份，再多就请稍后再来
 MAX_REPAIRS = int(E("MAX_REPAIRS", "2"))
-MAX_DOC_CHARS = int(E("MAX_DOC_CHARS", "30000"))
+MAX_DOC_CHARS = int(E("MAX_DOC_CHARS", "5000"))       # 长文档大模型太慢，网页版先限 5000 字
 MAX_OUTPUT_TOKENS = int(E("MAX_OUTPUT_TOKENS", "24000"))
 TIMEOUT = int(E("REQUEST_TIMEOUT", "240"))              # 等第一个字节 / 两段数据之间最长等多久
 STREAM = E("STREAM", "1") != "0"                         # 流式接收（默认开）
@@ -214,7 +214,7 @@ def admit(req, ip):
         raise PlanError("empty", "没有读到文档段落", False, 400)
     chars = sum(len(p["text"]) for p in paras)
     if chars > MAX_DOC_CHARS:
-        raise PlanError("too_long", f"文档太长（{chars} 字），目前最多支持 {MAX_DOC_CHARS} 字，可以拆成几份分别制作", False, 400)
+        raise PlanError("too_long", f"文档有 {chars} 字，网页版目前最多支持 {MAX_DOC_CHARS} 字，请拆成几份分别制作", False, 400)
     if not API_KEY:
         raise PlanError("server_config", "服务器还没配置好，请联系网站管理员", False, 500)
     visitor = str(req.get("visitor_id", ""))[:64]
