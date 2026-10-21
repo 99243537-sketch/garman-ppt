@@ -2,7 +2,7 @@
 
 一个 AI 技能包：把定稿的讲稿（.docx / .md / .txt）一键变成可编辑的 .pptx 课件，页面放原文摘句，完整原文进讲稿备注。
 
-**完整介绍：[zhaodun.work/ppt](https://www.zhaodun.work/ppt/)**　·　当前版本 0.3.0 试用版
+**完整介绍：[zhaodun.work/ppt](https://www.zhaodun.work/ppt/)**　·　当前版本 0.3.2 试用版
 
 ## 它做什么
 
@@ -61,7 +61,7 @@
 
 1. 从 [Releases](https://github.com/99243537-sketch/garman-ppt/releases/latest) 下载最新版 `garman-ppt-x.y.z.zip`。
 2. 装进你用的 AI 工具（WorkBuddy、ChatGPT 等支持技能的工具）。不支持导入的，解压后把 `garman-ppt` 文件夹直接发给它。
-3. 把定稿文档一起发过去，说：「做成 PPT」。它会按讲稿推荐 3 套配色让你挑；想要毛玻璃效果就加一句「毛玻璃效果」。
+3. 把定稿文档一起发过去，说：「做成 PPT」。它会先列出 13 套配色并按讲稿推荐 3 套，同时问你要普通还是毛玻璃效果。拿不准就说「推荐的 3 套都做」，一次出 3 个版本对比。
 
 做完想换颜色，说一声配色名就行，分页和文字不变。技能在本地跑，不上传文档。
 
