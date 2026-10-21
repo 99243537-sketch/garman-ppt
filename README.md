@@ -2,7 +2,7 @@
 
 把已定稿的文档（.docx / .md / .txt）转换成可编辑的 PPTX：忠实原文、13 套 Garman 自然色、卡片讲课动画、讲稿备注。
 
-**状态：0.3.0 试用版。** 正式技能在 `skill/garman-ppt/`；兼容性测试技能在 `skill-probe/`。
+**状态：0.3.2 试用版。** 正式技能在 `skill/garman-ppt/`；兼容性测试技能在 `skill-probe/`。
 
 ## 目录
 
