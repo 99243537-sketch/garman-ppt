@@ -15850,7 +15850,7 @@ var require_report = __commonJS({
 // src/version.js
 var require_version = __commonJS({
   "src/version.js"(exports2, module2) {
-    module2.exports = { VERSION: "0.3.0" };
+    module2.exports = { VERSION: "0.3.1" };
   }
 });
 
