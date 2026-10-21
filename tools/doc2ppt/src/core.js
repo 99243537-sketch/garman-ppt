@@ -17,6 +17,15 @@ function fit(s, wIn, hIn, max, min, ls = 1.25) {
   return null;
 }
 
+// ---------- 序号 ----------
+// 原文小标题自带的序号（一、 （一） 1. 第一章 ① 等）。章节页、目录、卡片已经显示编号，摘句开头再带序号就成了「01 一、」双重编号。
+// 去掉开头序号后剩下的仍是原文里连续的一截，不算改写。
+const ORD = /^\s*(?:第[一二三四五六七八九十百零〇两\d]+[章节部篇讲课单元]分?\s*[、，,.．:：]?|[（(][一二三四五六七八九十百零〇\d]+[)）]\s*[、.．]?|[一二三四五六七八九十百零〇]+\s*[、.．]|\d{1,3}\s*[、．]|\d{1,3}\s*[.)）](?!\d)|[①-⑳]|[A-Za-z]\s*[、.．](?![A-Za-z\d]))\s*/;
+function dropOrdinal(t) {
+  const m = ORD.exec(t || "");
+  return m && m[0].length < t.length ? t.slice(m[0].length) : t;
+}
+
 // ---------- 版面 ----------
 function cardBoxes(k, withConclusion, arrows) {
   const gap = arrows ? (k >= 4 ? 0.5 : 0.6) : k >= 4 ? 0.25 : 0.35, cw = (W - 2 * M - gap * (k - 1)) / k, ch = withConclusion ? 3.75 : 4.35;
@@ -45,10 +54,11 @@ function check(doc, plan) {
     if (!TYPES.includes(s.type)) { errs.push(`${at(i)}：页面类型 ${s.type} 不存在，只能用 ${TYPES.join("、")}`); return; }
     const w = at(i, s.type);
     if (s.type === "cover") { ex(s.title, w + " 标题"); if (s.kicker) ex(s.kicker, w + " 小标题"); if (s.sub) ex(s.sub, w + " 副标题"); take(s.notes, w); }
-    if (s.type === "section") { ex(s.title, w + " 标题"); if (s.sub) ex(s.sub, w + " 副标题"); take(s.notes, w); }
+    const ord = (t, where, label) => { const d = dropOrdinal(t); if (t && d !== t) warns.push(`${where}：已显示编号「${label}」，摘句开头的序号「${t.slice(0, t.length - d.length).trim()}」生成时自动去掉，页面显示「${d}」。也可以在 plan.json 里直接从序号后面摘。`); };
+    if (s.type === "section") { const t = ex(s.title, w + " 标题"); if (s.no) ord(t, w + " 标题", s.no); if (s.sub) ex(s.sub, w + " 副标题"); take(s.notes, w); }
     if (s.type === "toc") {
       if (!s.items || s.items.length < 2 || s.items.length > 6) errs.push(`${w}：目录要 2–6 项`);
-      (s.items || []).forEach((it, k) => { const t = ex(it, `${w} 第 ${k + 1} 项`); if (t && !fit(t, W - 2 * M - 1.2, 0.7, 20, 14, 1.1)) errs.push(`${w} 第 ${k + 1} 项太长，请换短一些的摘句`); });
+      (s.items || []).forEach((it, k) => { const q = ex(it, `${w} 第 ${k + 1} 项`), t = dropOrdinal(q); ord(q, `${w} 第 ${k + 1} 项`, String(k + 1)); if (t && !fit(t, W - 2 * M - 1.2, 0.7, 20, 14, 1.1)) errs.push(`${w} 第 ${k + 1} 项太长，请换短一些的摘句`); });
       take(s.notes, w);
     }
     if (s.type === "text") {
@@ -67,7 +77,8 @@ function check(doc, plan) {
       take(s.intro, w);
       s.cards.forEach((c, j) => {
         const cw = boxes[j].w - 2 * CARD.pad, wc = `${w} 第 ${j + 1} 张卡片`;
-        const h = ex(c.head, wc + " 标题"), b = c.body ? ex(c.body, wc + " 正文") : "";
+        const q = ex(c.head, wc + " 标题"), h = dropOrdinal(q), b = c.body ? ex(c.body, wc + " 正文") : "";
+        if (c.no) ord(q, wc + " 标题", c.no);
         if (h && !fit(h, cw, CARD.headH, k >= 4 ? 19 : 21, 16, 1.1)) errs.push(`${wc}：标题太长放不下，请换更短的摘句`);
         if (b && !fit(b, cw, boxes[j].h - CARD.bodyTop - 0.2, k >= 4 ? 15 : 16, 13, 1.3)) errs.push(`${wc}：正文太长放不下，请换更短的摘句`);
         if (!c.no || em(String(c.no)) > 3) errs.push(`${wc}：编号 no 要 1–3 个字（如 "1"、"一"、"十二"）`);
@@ -159,7 +170,7 @@ async function build(doc, plan, opts = {}) {
       s = slide(T.pale); head(s, "", "目录");
       const step = Math.min(0.92, 4.9 / d.items.length);
       d.items.forEach((it, k) => {
-        const y = 1.85 + k * step, h = step - 0.16, t = ex(it);
+        const y = 1.85 + k * step, h = step - 0.16, t = dropOrdinal(ex(it));
         box(s, M, y, W - 2 * M, h); chip(s, M + 0.25, y + (h - 0.46) / 2, String(k + 1));
         txt(s, t, { x: M + 1.0, y, w: W - 2 * M - 1.2, h, fontSize: fit(t, W - 2 * M - 1.2, h, 20, 14, 1.1) || 14, bold: true, color: C.title, valign: "middle" });
       });
@@ -168,7 +179,7 @@ async function build(doc, plan, opts = {}) {
       s = slide(T.base);
       if (G) box(s, 0.8, 1.7, 11.0, 3.7);
       if (d.no) txt(s, String(d.no), { x: 1.2, y: 2.0, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.main, valign: "bottom" });
-      const t = ex(d.title);
+      const t = d.no ? dropOrdinal(ex(d.title)) : ex(d.title);
       txt(s, t, { x: 1.2, y: 3.2, w: 10.5, h: 1.1, fontSize: fit(t, 10.5, 1.1, 44, 28, 1.1) || 28, bold: true, color: T.white, valign: "middle" });
       if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 10.5, h: 0.6, fontSize: 22, color: T.soft });
       foot(s, no, T.soft); s.addNotes(body(d.notes));
@@ -188,10 +199,10 @@ async function build(doc, plan, opts = {}) {
       s = slide(T.pale, { kind: "fade", steps, end: d.conclusion ? "K" : null });
       head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
       d.cards.forEach((c, j) => {
-        const { x, y, w, h, gap } = boxes[j], g = `C${j + 1}|${ex(c.head)}`, cw = w - 2 * CARD.pad;
+        const ht = c.no ? dropOrdinal(ex(c.head)) : ex(c.head);
+        const { x, y, w, h, gap } = boxes[j], g = `C${j + 1}|${ht}`, cw = w - 2 * CARD.pad;
         box(s, x, y, w, h, { g });
         chip(s, x + CARD.pad, y + 0.3, c.no, { g });
-        const ht = ex(c.head);
         txt(s, ht, { g, x: x + CARD.pad, y: y + CARD.headTop, w: cw, h: CARD.headH, fontSize: fit(ht, cw, CARD.headH, k >= 4 ? 19 : 21, 16, 1.1) || 16, bold: true, color: C.title, valign: "top", lineSpacingMultiple: 1.1 });
         if (c.body) { s.addShape(pres.shapes.LINE, { x: x + CARD.pad, y: y + CARD.ruleY, w: cw, h: 0, line: { color: C.rule, width: 0.75, transparency: G ? 60 : 0 }, objectName: nm(g, "rule") }); const bt = ex(c.body); txt(s, bt, { g, x: x + CARD.pad, y: y + CARD.bodyTop, w: cw, h: h - CARD.bodyTop - 0.2, fontSize: fit(bt, cw, h - CARD.bodyTop - 0.2, k >= 4 ? 15 : 16, 13, 1.3) || 13, color: C.ink, lineSpacingMultiple: 1.3 }); }
         if (d.arrows && j < k - 1) s.addShape(pres.shapes.RIGHT_ARROW, { x: x + w + gap * 0.18, y: y + h / 2 - 0.16, w: gap * 0.64, h: 0.32, fill: { color: C.arrow }, line: { color: C.arrow, width: 0 }, objectName: nm(`A${j + 1}|箭头`, "arrow") });
@@ -217,4 +228,4 @@ async function build(doc, plan, opts = {}) {
   return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer", plan.theme || DEFAULT_THEME);
 }
 
-module.exports = { check, build, applyCorrections, TYPES };
+module.exports = { check, build, applyCorrections, dropOrdinal, TYPES };

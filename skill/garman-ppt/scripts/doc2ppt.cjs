@@ -15553,6 +15553,11 @@ var require_core = __commonJS({
       for (let pt = max; pt >= min; pt -= 1) if (lines(s, pt, wIn) * pt * ls / 72 <= hIn) return pt;
       return null;
     }
+    var ORD = /^\s*(?:第[一二三四五六七八九十百零〇两\d]+[章节部篇讲课单元]分?\s*[、，,.．:：]?|[（(][一二三四五六七八九十百零〇\d]+[)）]\s*[、.．]?|[一二三四五六七八九十百零〇]+\s*[、.．]|\d{1,3}\s*[、．]|\d{1,3}\s*[.)）](?!\d)|[①-⑳]|[A-Za-z]\s*[、.．](?![A-Za-z\d]))\s*/;
+    function dropOrdinal(t) {
+      const m = ORD.exec(t || "");
+      return m && m[0].length < t.length ? t.slice(m[0].length) : t;
+    }
     function cardBoxes(k, withConclusion, arrows) {
       const gap = arrows ? k >= 4 ? 0.5 : 0.6 : k >= 4 ? 0.25 : 0.35, cw = (W - 2 * M - gap * (k - 1)) / k, ch = withConclusion ? 3.75 : 4.35;
       return Array.from({ length: k }, (_, j) => ({ x: M + j * (cw + gap), y: 1.85, w: cw, h: ch, gap }));
@@ -15595,15 +15600,21 @@ var require_core = __commonJS({
           if (s.sub) ex(s.sub, w + " \u526F\u6807\u9898");
           take(s.notes, w);
         }
+        const ord = (t, where, label) => {
+          const d = dropOrdinal(t);
+          if (t && d !== t) warns.push(`${where}\uFF1A\u5DF2\u663E\u793A\u7F16\u53F7\u300C${label}\u300D\uFF0C\u6458\u53E5\u5F00\u5934\u7684\u5E8F\u53F7\u300C${t.slice(0, t.length - d.length).trim()}\u300D\u751F\u6210\u65F6\u81EA\u52A8\u53BB\u6389\uFF0C\u9875\u9762\u663E\u793A\u300C${d}\u300D\u3002\u4E5F\u53EF\u4EE5\u5728 plan.json \u91CC\u76F4\u63A5\u4ECE\u5E8F\u53F7\u540E\u9762\u6458\u3002`);
+        };
         if (s.type === "section") {
-          ex(s.title, w + " \u6807\u9898");
+          const t = ex(s.title, w + " \u6807\u9898");
+          if (s.no) ord(t, w + " \u6807\u9898", s.no);
           if (s.sub) ex(s.sub, w + " \u526F\u6807\u9898");
           take(s.notes, w);
         }
         if (s.type === "toc") {
           if (!s.items || s.items.length < 2 || s.items.length > 6) errs.push(`${w}\uFF1A\u76EE\u5F55\u8981 2\u20136 \u9879`);
           (s.items || []).forEach((it, k) => {
-            const t = ex(it, `${w} \u7B2C ${k + 1} \u9879`);
+            const q = ex(it, `${w} \u7B2C ${k + 1} \u9879`), t = dropOrdinal(q);
+            ord(q, `${w} \u7B2C ${k + 1} \u9879`, String(k + 1));
             if (t && !fit(t, W - 2 * M - 1.2, 0.7, 20, 14, 1.1)) errs.push(`${w} \u7B2C ${k + 1} \u9879\u592A\u957F\uFF0C\u8BF7\u6362\u77ED\u4E00\u4E9B\u7684\u6458\u53E5`);
           });
           take(s.notes, w);
@@ -15632,7 +15643,8 @@ var require_core = __commonJS({
           take(s.intro, w);
           s.cards.forEach((c, j) => {
             const cw = boxes[j].w - 2 * CARD.pad, wc = `${w} \u7B2C ${j + 1} \u5F20\u5361\u7247`;
-            const h = ex(c.head, wc + " \u6807\u9898"), b = c.body ? ex(c.body, wc + " \u6B63\u6587") : "";
+            const q = ex(c.head, wc + " \u6807\u9898"), h = dropOrdinal(q), b = c.body ? ex(c.body, wc + " \u6B63\u6587") : "";
+            if (c.no) ord(q, wc + " \u6807\u9898", c.no);
             if (h && !fit(h, cw, CARD.headH, k >= 4 ? 19 : 21, 16, 1.1)) errs.push(`${wc}\uFF1A\u6807\u9898\u592A\u957F\u653E\u4E0D\u4E0B\uFF0C\u8BF7\u6362\u66F4\u77ED\u7684\u6458\u53E5`);
             if (b && !fit(b, cw, boxes[j].h - CARD.bodyTop - 0.2, k >= 4 ? 15 : 16, 13, 1.3)) errs.push(`${wc}\uFF1A\u6B63\u6587\u592A\u957F\u653E\u4E0D\u4E0B\uFF0C\u8BF7\u6362\u66F4\u77ED\u7684\u6458\u53E5`);
             if (!c.no || em(String(c.no)) > 3) errs.push(`${wc}\uFF1A\u7F16\u53F7 no \u8981 1\u20133 \u4E2A\u5B57\uFF08\u5982 "1"\u3001"\u4E00"\u3001"\u5341\u4E8C"\uFF09`);
@@ -15736,7 +15748,7 @@ var require_core = __commonJS({
           head(s, "", "\u76EE\u5F55");
           const step = Math.min(0.92, 4.9 / d.items.length);
           d.items.forEach((it, k) => {
-            const y = 1.85 + k * step, h = step - 0.16, t = ex(it);
+            const y = 1.85 + k * step, h = step - 0.16, t = dropOrdinal(ex(it));
             box(s, M, y, W - 2 * M, h);
             chip(s, M + 0.25, y + (h - 0.46) / 2, String(k + 1));
             txt(s, t, { x: M + 1, y, w: W - 2 * M - 1.2, h, fontSize: fit(t, W - 2 * M - 1.2, h, 20, 14, 1.1) || 14, bold: true, color: C.title, valign: "middle" });
@@ -15747,7 +15759,7 @@ var require_core = __commonJS({
           s = slide(T.base);
           if (G) box(s, 0.8, 1.7, 11, 3.7);
           if (d.no) txt(s, String(d.no), { x: 1.2, y: 2, w: 6, h: 1.1, fontSize: 60, bold: true, color: T.main, valign: "bottom" });
-          const t = ex(d.title);
+          const t = d.no ? dropOrdinal(ex(d.title)) : ex(d.title);
           txt(s, t, { x: 1.2, y: 3.2, w: 10.5, h: 1.1, fontSize: fit(t, 10.5, 1.1, 44, 28, 1.1) || 28, bold: true, color: T.white, valign: "middle" });
           if (d.sub) txt(s, ex(d.sub), { x: 1.2, y: 4.4, w: 10.5, h: 0.6, fontSize: 22, color: T.soft });
           foot(s, no, T.soft);
@@ -15770,10 +15782,10 @@ var require_core = __commonJS({
           s = slide(T.pale, { kind: "fade", steps, end: d.conclusion ? "K" : null });
           head(s, d.kicker ? ex(d.kicker) : "", ex(d.title));
           d.cards.forEach((c, j) => {
-            const { x, y, w, h, gap } = boxes[j], g = `C${j + 1}|${ex(c.head)}`, cw = w - 2 * CARD.pad;
+            const ht = c.no ? dropOrdinal(ex(c.head)) : ex(c.head);
+            const { x, y, w, h, gap } = boxes[j], g = `C${j + 1}|${ht}`, cw = w - 2 * CARD.pad;
             box(s, x, y, w, h, { g });
             chip(s, x + CARD.pad, y + 0.3, c.no, { g });
-            const ht = ex(c.head);
             txt(s, ht, { g, x: x + CARD.pad, y: y + CARD.headTop, w: cw, h: CARD.headH, fontSize: fit(ht, cw, CARD.headH, k >= 4 ? 19 : 21, 16, 1.1) || 16, bold: true, color: C.title, valign: "top", lineSpacingMultiple: 1.1 });
             if (c.body) {
               s.addShape(pres.shapes.LINE, { x: x + CARD.pad, y: y + CARD.ruleY, w: cw, h: 0, line: { color: C.rule, width: 0.75, transparency: G ? 60 : 0 }, objectName: nm(g, "rule") });
@@ -15805,7 +15817,7 @@ var require_core = __commonJS({
       const raw = await pres.write({ outputType: opts.browser ? "arraybuffer" : "nodebuffer" });
       return postProcess(raw, ANIM, opts.browser ? "blob" : "nodebuffer", plan.theme || DEFAULT_THEME);
     }
-    module2.exports = { check: check2, build: build2, applyCorrections, TYPES };
+    module2.exports = { check: check2, build: build2, applyCorrections, dropOrdinal, TYPES };
   }
 });
 
@@ -15850,7 +15862,7 @@ var require_report = __commonJS({
 // src/version.js
 var require_version = __commonJS({
   "src/version.js"(exports2, module2) {
-    module2.exports = { VERSION: "0.3.1" };
+    module2.exports = { VERSION: "0.3.2" };
   }
 });
 
