@@ -1,4 +1,4 @@
-// 天然矿物色 PPT 讲稿制作 · 网页版
+// GarmanPPT · 网页版
 (function () {
   const BASE = (window.PPT_API || "/ppt-api") + "/api";
   const D = window.Doc2PPT;
@@ -83,7 +83,7 @@
     catch (e) { throw fail(/[一-鿿]/.test(e.message || "") ? e.message : "这个文件打不开，可能已加密或已损坏。请用 Word 或 WPS 打开，「另存为」一个新的 .docx 再试。", "bad_file", false); }
     if (!doc.paras.length) throw fail("文档里没有读到文字。如果是扫描件或图片，需要先转成可编辑的文字。", "empty", false);
     const chars = doc.paras.reduce((n, p) => n + p.text.length, 0);
-    if (chars > MAXC) throw fail(`文档有 ${chars} 字，网页版目前最多支持 ${MAXC} 字。请拆成几份分别制作；长文档也可以用本站的「天然矿物色 PPT」技能，在 WorkBuddy、ChatGPT 等工具里制作。`, "too_long", false);
+    if (chars > MAXC) throw fail(`文档有 ${chars} 字，网页版目前最多支持 ${MAXC} 字。请拆成几份分别制作；长文档也可以用本站的「GarmanPPT」技能，在 WorkBuddy、ChatGPT 等工具里制作。`, "too_long", false);
     return doc;
   }
 

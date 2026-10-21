@@ -3,7 +3,7 @@
 新会话从这里接着做。
 
 ## 已定
-- 产品名「天然矿物色 PPT 讲稿制作」，仓库 99243537-sketch/mineral-ppt（私有）。
+- 产品名 GarmanPPT（2026-10-20 前叫「天然矿物色 PPT 讲稿制作」/ mineral-ppt），仓库 99243537-sketch/garman-ppt（公开）。
 - 第一阶段只做技能版：AI 只出「分页方案」，程序校验（摘句逐字、备注全覆盖）后排版生成；不接大模型 API。
 - 第二阶段才做网页版（上传即生成，需接国产模型 API、应用登记）。
 - 发布：GitHub 为准，打 v* 标签自动发 Release；网站由 Eddy 定时从 GitHub 拉取放到 zhaodun.work 下载页（仓库需公开或给 Eddy 只读令牌）。
@@ -84,3 +84,24 @@
 - 实测 2 万字文档在 MiniMax-M2.7 上十几分钟出不来（前端 12 分钟轮询上限触发）。赵老师决定先放一放，网页版只做 5000 字以内；长文档引导用技能。
 - MAX_DOC_CHARS 默认 5000（服务器 .env 需同步改）；前端 MAXC=5000（可用 window.PPT_MAX_CHARS 覆盖）。
 - 以后若要支持长文档：按章节切段（每段 3–5 千字），并发分页后合并 slides（封面/目录/结尾只由首末段生成），再统一校验。
+
+## 2026-10-20 改名 GarmanPPT（0.2.2）
+- 赵盾为便于记忆，全部改名为 GarmanPPT：技能 garman-ppt（skill/garman-ppt/，Release v0.2.2 附件 garman-ppt-0.2.2.zip）；兼容性测试技能 garman-ppt-probe（v0.1.2-probe，测试稿《GarmanPPT-兼容性测试稿.pptx》）；网页版标题、服务端提示词与说明；仓库改名为 99243537-sketch/garman-ppt（GitHub 自动跳转旧地址）。功能不变。
+- 没有 esbuild，单文件脚本（doc2ppt.cjs、probe.cjs）里的名称和版本号是直接替换的；网页版 doc2ppt.browser.js 未重新打包，内部版本号仍为 0.2.1。下次重新打包时以 src 为准。
+- 网站上只需改 Skill 介绍页的文字和下载链接（见下一节），Eddy 的拉取地址需同步改。
+
+## 2026-10-20 网页版取消
+- 赵盾决定取消网页版讲稿制作项目，只保留技能（GarmanPPT）。Eddy 已于 10-20 撤下：ppt-planner 服务已停用（inactive + disabled），原网页备份在 /ppt-offline-20261020/，Nginx 的 /ppt-api/ 段已注释。
+- https://www.zhaodun.work/ppt/ 现在是 Eddy 做的 Skill 介绍页（中英双语，另有 /ppt/en/、/letter.html、main.html 入口）。技能发新版时只更新这些页面的文字和下载链接，不要部署 web/ 和 server/。
+- 仓库里的 web/、server/ 和 docs/部署说明-给Eddy.md 只作存档，不再维护。
+
+## 2026-10-20 0.3.0：Garman 自然色 13 套
+- 赵盾决定不另做 Pro 版，直接在 GarmanPPT 里加配色，版本升到 0.3.0。毛玻璃仍为实验效果，只配天河石。
+- plan.json 顶层新增 `"theme"`（13 个中文名之一，默认天河石）。不写 theme 时页面 XML 与 0.2.2 逐字节一致（主题色板只改了名字）。
+- 配色由 `tools/palette/derive.py` 生成 `tools/doc2ppt/src/themes.js`；规则见 docs/Garman色彩规范-v3.md。角色名改为 main/soft/pale/deep/base/accent/ink/muted/line。
+- 打包：npm 现在可用；esbuild + pptxgenjs@4.0.1 + jszip@3.10.1 装在任意目录，软链到 /opt/npm-tools 后带 `--preserve-symlinks` 打包，产物里的路径注释才和以前一致。
+- 选色流程（赵盾同意）：在智能体里选完，不跳网站。SKILL.md 让智能体推荐 3 套并发配色一览图；`build … --theme 银杏,鸢尾,天河石` 一次出多个配色版本（文件名带配色名），`--theme 银杏` 做完后换色，都不改 plan.json。网站计划做「Garman 自然色图鉴」页（如 /ppt/colors/），名称须与技能一致；
+- 毛玻璃全套配色（赵盾决定放进 0.3.0）：`make_glass.py src/glassbg.js` 读 themes.js 逐套生成底图，天河石沿用原图（与 0.2.2 一致）；glassbg.js 改为 {配色名: {plain, dark}}，脚本约 2.1MB。
+- 图鉴网站：https://www.zhaodun.work/color/#garman ，已写进 SKILL.md 与 RELEASE_NOTES；提示词与素材包另交给赵盾。
+- 待做：新配色在 PowerPoint、WPS 上放映复核；网站 /ppt/ 介绍页更新文字和下载链接（garman-ppt-0.3.0.zip）。
+- 以后可议：多主色（乌桕、鸳鸯、鲍鱼壳）、红色系深色封面。
