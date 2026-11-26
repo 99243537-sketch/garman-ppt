@@ -1,8 +1,8 @@
-# GarmanPPT（garman-ppt）
+# garman basic ppt（garman-basic-ppt）
 
-一个 AI 技能包：把定稿的讲稿（.docx / .md / .txt）一键变成可编辑的 .pptx 课件，页面放原文摘句，完整原文进讲稿备注。
+静态、忠实原文的基础版 AI 技能包（与 Garman 动态 skill 区分）：把定稿的讲稿（.docx / .md / .txt）一键变成可编辑的 .pptx 课件，页面放原文摘句，完整原文进讲稿备注。
 
-**完整介绍：[zhaodun.work/ppt](https://www.zhaodun.work/ppt/)**　·　当前版本 0.3.2 试用版
+**完整介绍：[zhaodun.work/ppt](https://www.zhaodun.work/ppt/)**　·　当前版本 0.3.3 试用版
 
 ## 它做什么
 
@@ -37,7 +37,7 @@
 
 每套配色取自一种自然物，明暗结构、版式、动画完全相同，只换颜色。默认的天河石来自赵盾矿物色彩系统 v2.3。
 
-<img src="skill/garman-ppt/references/配色一览.jpg" width="100%" alt="13 套配色一览">
+<img src="skill/garman-basic-ppt/references/配色一览.jpg" width="100%" alt="13 套配色一览">
 
 | 配色 | 来源 | 色调与适用 |
 |---|---|---|
@@ -59,9 +59,9 @@
 
 ## 用法
 
-1. 从 [Releases](https://github.com/99243537-sketch/garman-ppt/releases/latest) 下载最新版 `garman-ppt-x.y.z.zip`。
-2. 装进你用的 AI 工具（WorkBuddy、ChatGPT 等支持技能的工具）。不支持导入的，解压后把 `garman-ppt` 文件夹直接发给它。
-3. 把定稿文档一起发过去，说：「做成 PPT」。它会先列出 13 套配色并按讲稿推荐 3 套，同时问你要普通还是毛玻璃效果。拿不准就说「推荐的 3 套都做」，一次出 3 个版本对比。
+1. 从 [Releases](https://github.com/99243537-sketch/garman-ppt/releases/latest) 下载最新版 `garman-basic-ppt-x.y.z.zip`（0.3.2 及以前叫 `garman-ppt-x.y.z.zip`）。
+2. 装进你用的 AI 工具（WorkBuddy、ChatGPT 等支持技能的工具）。不支持导入的，解压后把 `garman-basic-ppt` 文件夹直接发给它。
+3. 把定稿文档一起发过去，说：「做成 PPT」。它会先列出 13 套配色并按讲稿推荐 3 套，问你要普通还是毛玻璃效果，并从原文挑一句「听众最该记住的一件事」请你确认，放在封面副标题。拿不准就说「推荐的 3 套都做」，一次出 3 个版本对比。
 
 做完想换颜色，说一声配色名就行，分页和文字不变。技能在本地跑，不上传文档。
 
@@ -75,7 +75,7 @@
 
 | 路径 | 内容 |
 |---|---|
-| `skill/garman-ppt/` | 正式技能（单文件脚本，无需 npm install） |
+| `skill/garman-basic-ppt/` | 正式技能（单文件脚本，无需 npm install） |
 | `tools/doc2ppt/` | 正式技能源码（Node 与浏览器共用） |
 | `tools/palette/` | 推色脚本，生成 `tools/doc2ppt/src/themes.js` |
 | `skill-probe/` | 兼容性测试技能，见 [docs/测试技能.md](docs/测试技能.md) |

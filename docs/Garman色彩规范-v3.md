@@ -34,7 +34,7 @@ v3 把赵盾矿物色彩系统 v2.3 里「做在里面、没写下来」的结�
 2. 量出主色、点睛色、深底（环境色）的色相和彩度。
 3. 写进 `tools/palette/derive.py` 的 `THEMES`，运行生成 `tools/doc2ppt/src/themes.js`，脚本会检查对比度。
 4. 和现有各套比色差（主色 60%、点睛 25%、深底 15%，OKLab ΔE），太近的不收。
-5. 重新打包 `skill/garman-ppt/scripts/doc2ppt.cjs`，更新 SKILL.md 的配色表和 `references/配色一览.jpg`。
+5. 重新打包 `skill/garman-basic-ppt/scripts/doc2ppt.cjs`，更新 SKILL.md 的配色表和 `references/配色一览.jpg`。
 
 ## 0.3.0 收录的 13 套
 

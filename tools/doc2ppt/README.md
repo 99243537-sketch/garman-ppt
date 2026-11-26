@@ -10,5 +10,5 @@
 打包（无需联网安装依赖时，用环境里已有的 esbuild、pptxgenjs、jszip）：
 
 ```
-esbuild src/cli.js --bundle --platform=node --target=node16 --format=cjs --outfile=../../skill/garman-ppt/scripts/doc2ppt.cjs
+esbuild src/cli.js --bundle --platform=node --target=node16 --format=cjs --outfile=../../skill/garman-basic-ppt/scripts/doc2ppt.cjs
 ```

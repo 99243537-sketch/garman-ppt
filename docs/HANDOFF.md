@@ -119,3 +119,13 @@
 - 本次用 esbuild 重新打包了 doc2ppt.cjs（依赖 pptxgenjs 4.0.1、jszip 3.10.1，与原包一致；模块路径注释保持 /opt/npm-tools）。两个示例的 slides 与备注 XML 与 0.3.1 逐字节一致。
 - 基于 0.3.1 分支（PR #5）；Release 改为 v0.3.2、附件 garman-ppt-0.3.2.zip。
 - 待做：网站 /ppt/ 介绍页更新版本号与下载链接。
+
+## 2026-11-26 0.3.3：garman basic ppt（少元素、结论优先）
+- 赵盾参照 Nagel《10 Simple Rules for Effective Presentation Slides》讨论后确认的方案：只改规则文档，不改 doc2ppt.cjs，仍「只摘不写」。
+- 主线：第一次回复时从原文挑一句「听众最该记住的一件事」请用户确认，放封面 `sub`。不做回顾页、串讲词、lint 脚本（第一版 PR 里有，讨论后去掉，保持 basic 简单）。
+- 挑句结论优先；硬上限写进 SKILL.md 与 plan-format.md：卡片 2–3 张最多 4 张、body 整页统一且只在有数字/做法时放、kicker 与 conclusion 默认不用（拆页同名时才用 kicker）、目录 ≤ 4 项（章节多于 4 个不做目录）、text 要点 ≤ 2 条。`check` 不查这些上限（脚本未改）。
+- 交付提醒另存 PDF 并多处保存。
+- 改名：目录 skill/garman-ppt → skill/garman-basic-ppt，SKILL.md name: garman-basic-ppt；Release v0.3.3，附件 garman-basic-ppt-0.3.3.zip。仓库名仍是 garman-ppt。
+- 两个示例 plan.json 按新规则改写（公文示例去掉目录，原目录页备注 P007–P009 移到第一个章节页），check 通过。
+- 未解决：卡片只放标题时卡片下方空白多（卡片高度固定），要改脚本，留给动态版或 0.4。
+- 待做：合并后更新专题页 https://www.zhaodun.work/ppt/（名字、版本、下载链接、安装路径 garman-basic-ppt/）；网站仓库组合包若内置技能 zip 也要换。
