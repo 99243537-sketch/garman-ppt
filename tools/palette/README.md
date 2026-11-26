@@ -6,4 +6,4 @@
 python3 derive.py ../doc2ppt/src/themes.js
 ```
 
-生成后按 `tools/doc2ppt/README.md` 重新打包 `skill/garman-ppt/scripts/doc2ppt.cjs`。
+生成后按 `tools/doc2ppt/README.md` 重新打包 `skill/garman-basic-ppt/scripts/doc2ppt.cjs`。

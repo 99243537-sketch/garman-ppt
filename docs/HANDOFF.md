@@ -120,13 +120,12 @@
 - 基于 0.3.1 分支（PR #5）；Release 改为 v0.3.2、附件 garman-ppt-0.3.2.zip。
 - 待做：网站 /ppt/ 介绍页更新版本号与下载链接。
 
-## 2026-11-26 0.3.3：讲述规则（Nagel 10 条）
-- 赵盾要求把《10 Simple Rules for Effective Presentation Slides》的要点用到基础版 skill。按项目约定 0.3.x 不改 doc2ppt.cjs，全部做成内容规则 + 独立自检脚本。
-- 新增 `references/content-rules.md`（8 条：一件事、结论标题、一页一观点、减法、单一强调色、排版、动画克制、PDF + 串讲词）和 `scripts/lint-plan.cjs`（只读 plan.json + paras.json/paras.txt，不碰 PPT；✗ 退出码 1；写出 串讲词.md）。
-- plan.json 新增 `takeaway`（顶层，原文摘句）和每页 `bridge`（智能体写的连接句）。doc2ppt 忽略未知字段，生成结果不受影响。「一件事」因 end 页只显示「谢谢」，改为结尾前加一页 text 回顾页。
-- 连接句不进 PPT 备注：备注只放原文、且不能改脚本，所以汇总成单独的 串讲词.md。以后若要写进备注，要改 doc2ppt（留给 garman-style-ppt）。
-- 第 5–7 条（单一强调色、无斜体下划线、只用淡入）脚本已满足，规则里只要求挑摘句时不破坏。text 页无动画的老问题未动。
-- PDF：SKILL.md 第 6 步用 `soffice --headless --convert-to pdf`；无 LibreOffice 则请用户在 PowerPoint 导出。
-- 大纲示例 plan.json 按新规则重写（check、lint-plan、build、PDF 均通过）；公文示例未补 takeaway / bridge。
-- doc2ppt.cjs 与 version.js 未改，脚本仍自报 0.3.2；Release 改为 v0.3.3、附件 garman-ppt-0.3.3.zip。
-- 待做：网站 /ppt/ 介绍页更新版本号、新流程（会先问「一件事」）和下载链接。
+## 2026-11-26 0.3.3：garman basic ppt（少元素、结论优先）
+- 赵盾参照 Nagel《10 Simple Rules for Effective Presentation Slides》讨论后确认的方案：只改规则文档，不改 doc2ppt.cjs，仍「只摘不写」。
+- 主线：第一次回复时从原文挑一句「听众最该记住的一件事」请用户确认，放封面 `sub`。不做回顾页、串讲词、lint 脚本（第一版 PR 里有，讨论后去掉，保持 basic 简单）。
+- 挑句结论优先；硬上限写进 SKILL.md 与 plan-format.md：卡片 2–3 张最多 4 张、body 整页统一且只在有数字/做法时放、kicker 与 conclusion 默认不用（拆页同名时才用 kicker）、目录 ≤ 4 项（章节多于 4 个不做目录）、text 要点 ≤ 2 条。`check` 不查这些上限（脚本未改）。
+- 交付提醒另存 PDF 并多处保存。
+- 改名：目录 skill/garman-ppt → skill/garman-basic-ppt，SKILL.md name: garman-basic-ppt；Release v0.3.3，附件 garman-basic-ppt-0.3.3.zip。仓库名仍是 garman-ppt。
+- 两个示例 plan.json 按新规则改写（公文示例去掉目录，原目录页备注 P007–P009 移到第一个章节页），check 通过。
+- 未解决：卡片只放标题时卡片下方空白多（卡片高度固定），要改脚本，留给动态版或 0.4。
+- 待做：合并后更新专题页 https://www.zhaodun.work/ppt/（名字、版本、下载链接、安装路径 garman-basic-ppt/）；网站仓库组合包若内置技能 zip 也要换。
