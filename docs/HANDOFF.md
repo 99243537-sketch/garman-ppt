@@ -119,3 +119,14 @@
 - 本次用 esbuild 重新打包了 doc2ppt.cjs（依赖 pptxgenjs 4.0.1、jszip 3.10.1，与原包一致；模块路径注释保持 /opt/npm-tools）。两个示例的 slides 与备注 XML 与 0.3.1 逐字节一致。
 - 基于 0.3.1 分支（PR #5）；Release 改为 v0.3.2、附件 garman-ppt-0.3.2.zip。
 - 待做：网站 /ppt/ 介绍页更新版本号与下载链接。
+
+## 2026-11-26 0.3.3：讲述规则（Nagel 10 条）
+- 赵盾要求把《10 Simple Rules for Effective Presentation Slides》的要点用到基础版 skill。按项目约定 0.3.x 不改 doc2ppt.cjs，全部做成内容规则 + 独立自检脚本。
+- 新增 `references/content-rules.md`（8 条：一件事、结论标题、一页一观点、减法、单一强调色、排版、动画克制、PDF + 串讲词）和 `scripts/lint-plan.cjs`（只读 plan.json + paras.json/paras.txt，不碰 PPT；✗ 退出码 1；写出 串讲词.md）。
+- plan.json 新增 `takeaway`（顶层，原文摘句）和每页 `bridge`（智能体写的连接句）。doc2ppt 忽略未知字段，生成结果不受影响。「一件事」因 end 页只显示「谢谢」，改为结尾前加一页 text 回顾页。
+- 连接句不进 PPT 备注：备注只放原文、且不能改脚本，所以汇总成单独的 串讲词.md。以后若要写进备注，要改 doc2ppt（留给 garman-style-ppt）。
+- 第 5–7 条（单一强调色、无斜体下划线、只用淡入）脚本已满足，规则里只要求挑摘句时不破坏。text 页无动画的老问题未动。
+- PDF：SKILL.md 第 6 步用 `soffice --headless --convert-to pdf`；无 LibreOffice 则请用户在 PowerPoint 导出。
+- 大纲示例 plan.json 按新规则重写（check、lint-plan、build、PDF 均通过）；公文示例未补 takeaway / bridge。
+- doc2ppt.cjs 与 version.js 未改，脚本仍自报 0.3.2；Release 改为 v0.3.3、附件 garman-ppt-0.3.3.zip。
+- 待做：网站 /ppt/ 介绍页更新版本号、新流程（会先问「一件事」）和下载链接。
